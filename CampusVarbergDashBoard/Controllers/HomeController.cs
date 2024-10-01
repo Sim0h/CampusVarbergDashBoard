@@ -1,4 +1,5 @@
 using CampusVarbergDashBoard.Models;
+using CampusVarbergDashBoard.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,16 +8,22 @@ namespace CampusVarbergDashBoard.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-
-		public HomeController(ILogger<HomeController> logger)
+		private readonly IApplicantRepository _applicantRepo;
+        public HomeController(ILogger<HomeController> logger, IApplicantRepository applicantRepo)
 		{
-			_logger = logger;
+            _applicantRepo = applicantRepo;
+            _logger = logger;
 		}
 
 		public IActionResult Index()
 		{
-			return View();
-		}
+            var applicants = _applicantRepo.GetAllApplicants(); // Ensure this returns a valid list
+            if (applicants == null)
+            {
+                applicants = new List<Applicant>(); // Initialize to an empty list if null
+            }
+            return View(applicants);
+        }
 
 		public IActionResult Privacy()
 		{
