@@ -15,13 +15,9 @@ namespace CampusVarbergDashBoard.Controllers
             _logger = logger;
 		}
 
-		public IActionResult Index()
+		public async Task <IActionResult> Index()
 		{
-            var applicants = _applicantRepo.GetAllApplicants(); // Ensure this returns a valid list
-            if (applicants == null)
-            {
-                applicants = new List<Applicant>(); // Initialize to an empty list if null
-            }
+            var applicants = await _applicantRepo.GetAllApplicantsAsync();
             return View(applicants);
         }
 
