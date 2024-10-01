@@ -23,5 +23,6 @@ namespace CampusVarbergDashBoard.Models
         public double Latitude { get; set; }
         public int Ålder { get; set; }
 
+
     }
 }
