@@ -4,20 +4,19 @@
        
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    @foreach(var applicant in Model)
+    @foreach (var applicant in Model)
     {
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">@applicant.Fodelsedatum</h5>
-                <p class="card-text">@applicant.Utbildning</p>
-                <p class="card-text">@applicant.Kon</p>
-                <p class="card-text">@applicant.Postnummer</p>
-                <p class="card-text">@applicant.Ort</p>
-                <p class="card-text">@applicant.Land</p>
-                <p class="card-text">@applicant.Registrerad</p>
-                <p class="card-text">@applicant.Behorig</p>
+                <h5 class="card-title">Födelsedatum: @applicant.Födelsedatum</h5>
+                <p class="card-text">Utbildning: @applicant.Utbildning</p>
+                <p class="card-text">Kön: @applicant.Kön</p>
+                <p class="card-text">Postnummer: @applicant.Postnummer</p>
+                <p class="card-text">Ort: @applicant.Ort</p>
+                <p class="card-text">Land: @applicant.Land</p>
+                <p class="card-text">Registrerad: @applicant.Registrerad</p>
+                <p class="card-text">Behörig: @applicant.Behörig</p>
             </div>
         </div>
-    })
-
+    }
 </div>
