@@ -1,3 +1,5 @@
+using CampusVarbergDashBoard.Models;
+using CampusVarbergDashBoard.Repository;
 using Microsoft.Data.SqlClient;
 
 namespace CampusVarbergDashBoard
@@ -6,26 +8,15 @@ namespace CampusVarbergDashBoard
 	{
 		public static void Main(string[] args)
 		{
-			//Connectionstring till databasen
-			string connectionString = "Server=projektcampusvarberg.database.windows.net;Database=CampusVarbergDashboardDB;User Id=tcvadmin;Password=campusvarberg1!;";
+			
+            var builder = WebApplication.CreateBuilder(args);
+			
 
-			using (SqlConnection connection = new SqlConnection(connectionString))
-			{
-				try
-				{
-					connection.Open();
-					Console.WriteLine("Connection to database established");
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine("Error: " + e.Message);
-				}
-			}
+			string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddScoped<IApplicantRepository>(provider => new ApplicantRepository(connectionString));
 
-			var builder = WebApplication.CreateBuilder(args);
-
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 
 			var app = builder.Build();
 
