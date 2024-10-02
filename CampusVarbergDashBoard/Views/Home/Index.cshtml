@@ -1,23 +1,51 @@
 ﻿@model IEnumerable<Applicant>
-               
+         
+@{
+    spacingModel modelValue = new spacingModel();
+    modelValue.cellSpacing = new double[] { 10, 10 };
+}
 
-       
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    @foreach(var applicant in Model)
-    {
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">@applicant.Fodelsedatum</h5>
-                <p class="card-text">@applicant.Utbildning</p>
-                <p class="card-text">@applicant.Kon</p>
-                <p class="card-text">@applicant.Postnummer</p>
-                <p class="card-text">@applicant.Ort</p>
-                <p class="card-text">@applicant.Land</p>
-                <p class="card-text">@applicant.Registrerad</p>
-                <p class="card-text">@applicant.Behorig</p>
+
+<div class="container">
+    <div class="dashboard">
+        <h1>Summering av Sökande till YH-Utbildningar:</h1>
+        <div>
+            <div class=" control-section">
+                <!--  DashboardLayout element declaration -->
+                <ejs-dashboardlayout id="defaultLayout" columns="6" cellSpacing="modelValue.cellSpacing">
+                    <e-dashboardlayout-panels>
+                        <!--Panel 1-->
+                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="0" col="0" content="<div>1</div>">
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 2-->
+                        <e-dashboardlayout-panel sizeX="3" sizeY="2" row="0" col="1" content="<div>2</div>">
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 3-->
+                        <e-dashboardlayout-panel sizeX="1" sizeY="3" row="0" col="4" content="<div>3</div>">
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 4-->
+                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="1" col="0" content="<div>4</div>">
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 5-->
+                        <e-dashboardlayout-panel sizeX="2" sizeY="1" row="2" col="0" content="<div>5</div>">
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 6-->
+                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="2" col="2" content="<div>6</div>">
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 7-->
+                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="2" col="3" content="<div>7</div>">
+                        </e-dashboardlayout-panel>
+
+                    </e-dashboardlayout-panels>
+                </ejs-dashboardlayout>
+                <!-- end of dashboardlayout element -->
             </div>
         </div>
-    })
-
+    </div>
 </div>
