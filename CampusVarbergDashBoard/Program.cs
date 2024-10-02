@@ -18,7 +18,11 @@ namespace CampusVarbergDashBoard
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-			var app = builder.Build();
+			//Syncfusion license
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NDaF5cWGNCf1NpRGVGfV5ycEVPal5ZTnJXUiweQnxTdEFjUH1bcHBWQGVcVER/WQ==");
+
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
