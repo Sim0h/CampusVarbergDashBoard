@@ -26,7 +26,8 @@ namespace CampusVarbergDashBoard.Repository
                 string query = "SELECT Utbildning, Födelsedatum, Kön, Postnummer, Ort, Land, Registrerad, Inlämnad, Behörig, Sen_Anmälan, Status, Erbjuden_Plats_Datum, Urval, Longitud, Latitude from dbo.ExcelData";
                 return (await connection.QueryAsync<Applicant>(query)).ToList();
             }
-
         }
+
+        
     }
 }
