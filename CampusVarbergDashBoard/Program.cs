@@ -40,6 +40,7 @@ namespace CampusVarbergDashBoard
 				pattern: "{controller=Home}/{action=Index}/{id?}");
 
 			app.Run();
+
 		}
 	}
 }
