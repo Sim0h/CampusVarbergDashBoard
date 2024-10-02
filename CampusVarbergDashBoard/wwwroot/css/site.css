@@ -18,5 +18,51 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    background-color: #dedfe4;
 }
+
+.nav-item{
+    padding: 0 10px !important;
+}
+
+.nav-item a{
+    width: 120px;
+    text-align:center;
+}
+
+/*.navbar-nav{
+    margin-left: 10%;
+}*/
+
+.navbar {
+    background-color: #f6bf45 !Important;
+}
+
+.nav-button:hover {
+    background-color: #D2E6EF !Important;
+}
+
+.nav-item.separator {
+    border-left: 1px solid black; /* Vänsterkant på Inställningar */
+    margin-left: 8%; /* Utrymme till vänster om strecket */
+    padding-left: 8%; /* Utrymme till vänster om innehållet */
+}
+
+
+
+/* DashboardLayout element styles  */
+#defaultLayout {
+    padding: 10px;
+}
+
+#defaultLayout .e-panel .e-panel-container {
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: 20px;
+    text-align: center;
+    line-height: 160px;
+}
+
+
