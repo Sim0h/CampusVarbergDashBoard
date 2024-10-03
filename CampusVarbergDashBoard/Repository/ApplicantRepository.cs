@@ -51,18 +51,20 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-        public Task<CompetenceDistribution> GetCompetenceDistributionAsync()
+        public async Task<CompetenceDistribution> GetCompetenceDistributionAsync()
         {
+
             using (var connection = GetConnection())
             {
+                await connection.OpenAsync(); // Ensure the connection is opened
+
                 string query = @"
-                                SELECT
-                                    SUM(CASE WHEN Behörighet = 'Ja' THEN 1 ELSE 0 END) AS CompetenceCount,
-                                    SUM(CASE WHEN Behörighet = 'Nej' THEN 1 ELSE 0 END) AS NonCompetenceCount
-                                FROM dbo.ExcelData";
+                        SELECT
+                            SUM(CASE WHEN Behörig = 'Ja' THEN 1 ELSE 0 END) AS CompetenceCount,
+                            SUM(CASE WHEN Behörig = 'Nej' THEN 1 ELSE 0 END) AS NonCompetenceCount
+                        FROM dbo.ExcelData";
 
-                return connection.QueryFirstOrDefaultAsync<CompetenceDistribution>(query);
-
+                return await connection.QueryFirstOrDefaultAsync<CompetenceDistribution>(query);
             }
         }
 
@@ -102,7 +104,7 @@ namespace CampusVarbergDashBoard.Repository
 
         public async Task<StatusDistribution> GetStatusDistributionAsync()
         {
-            using(var connection = GetConnection())
+            using (var connection = GetConnection())
             {
                 string query = @"
                                 SELECT
