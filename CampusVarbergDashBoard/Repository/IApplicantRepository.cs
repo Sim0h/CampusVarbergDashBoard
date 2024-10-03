@@ -14,7 +14,7 @@ namespace CampusVarbergDashBoard.Repository
 
         //Define function that shows how many people applied for all educations
         Task<TotalApplicants> GetTotalApplicantsAsync();
-        
+
         Task<GenderDistribution> GetGenderDistributionAsync();
         //Define function to get gender split by Utbildning
         Task<GenderDistribution> GetGenderDistributionByEducationAsync(string education, string term);
@@ -23,7 +23,7 @@ namespace CampusVarbergDashBoard.Repository
 
 
 
-        Task<IEnumerable<Applicant>> GetAllApplicantsAsync();
+        Task<IEnumerable<Applicant>> GetApplicantsLocAsync();
         Task UpdateApplicantCoordinatesAsync(Applicant applicant);
 
     }
