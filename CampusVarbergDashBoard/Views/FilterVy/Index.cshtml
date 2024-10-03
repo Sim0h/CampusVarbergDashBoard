@@ -1,2 +1,126 @@
-﻿
+﻿@model IEnumerable<Applicant>
 
+
+@{
+
+    var utbildning = new string[] { "Alla YH Utbildningar", "Digital analytiker", "Elkonstruktör, Varberg", "Energitekniker med specialisering vindkraft",
+    "IT-projektledare", "Järnvägsprojektör", "Laborant", "Logistiker", "Medicinsk vårdadministratör", "Processtekniker - hållbar produktion",
+    "Projektledare inriktning vindkraft", "Redovisningskonsult", "Rådgivare bank och placering", "Solenergiprojektör", "Systemutvecklare .NET",
+    "Vatten- och biogastekniker", "VVS-ingenjör - energi och teknik"};
+
+    var kön = new string[] { "Alla Kön", "Kvinna", "Man" };
+
+    var år = new string[] { "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016" };
+
+    var termin = new string[] { "Alla terminer", "Vårtermin", "Hösttermin" };
+
+    var utbildningData = Model
+        // .Where(a=> !a.Utbildning.Contains("INSTÄLLD"))
+        .GroupBy(a => a.Utbildning)
+        .Select(g => new { Utbildning = g.Key, Count = g.Count() })
+        .ToList();
+
+
+    var sexData = Model
+        .GroupBy(a => a.Kön)
+        .Select(g => new { Kön = g.Key, Count = g.Count() })
+        .ToList();
+
+}
+
+    <div class="dropdown-container">
+        <div class="dropdown-item">
+            <ejs-dropdownlist id="utbildning" name="utbildning" dataSource="utbildning" popupWidth="220px" placeholder="Välj utbildning" popupHeight="220px"></ejs-dropdownlist>
+        </div>
+
+        <div class="dropdown-item">
+            <ejs-dropdownlist id="kön" name="kön" dataSource="kön" popupWidth="220px" placeholder="Välj Kön" popupHeight="220px"></ejs-dropdownlist>
+        </div>
+
+        <div class="dropdown-item">
+            <ejs-dropdownlist id="år" name="år" dataSource="år" popupWidth="220px" placeholder="Välj År" popupHeight="220px"></ejs-dropdownlist>
+        </div>
+
+        <div class="dropdown-item">
+            <ejs-dropdownlist id="termin" name="termin" dataSource="termin" popupWidth="220px" placeholder="Välj Termin" popupHeight="220px"></ejs-dropdownlist>
+        </div>
+        <div class="button-container">
+            <button type="submit" class="btn btn-primary">Sök</button>
+        </div>
+    </div>
+
+
+   <style>
+       /* Behåll layouten för dropdowns */
+       .dropdown-container {
+           display: flex;
+           gap: 20px;
+           justify-content: center;
+           padding-top: 15px;
+           padding-bottom: 15px;
+           background-color: #f873b6;
+           border-radius: 4px;
+       }
+
+       .dropdown-item {
+           flex: 1;
+           max-width: 300px;
+       }
+
+       .dropdown-item:hover {
+           background-color: transparent;
+           border-color: transparent;
+           box-shadow: none;
+       }
+
+       .dropdown-item .e-control-wrapper {
+           border-radius: 4px;
+       }
+
+       .e-ddl.e-input-group.e-control-wrapper .e-input {
+           font-size: 15px;
+           font-family: inherit;
+           color: black;
+           background: #32a5ab;
+       }
+
+       .btn{
+        color: #ffffff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+    }
+       .button-container {
+        display: inline-block;
+        margin-bottom: 0;
+        font-weight: normal;
+        text-align: center;
+        vertical-align: middle;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        border-radius: 4px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-color:
+       }
+
+       .applicant-list {
+           margin-top: 20px;
+       }
+
+       .card {
+           margin-bottom: 10px;
+       }
+
+    .pie-chart-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+   </style>

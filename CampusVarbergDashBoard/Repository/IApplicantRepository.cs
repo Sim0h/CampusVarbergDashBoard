@@ -5,13 +5,13 @@ namespace CampusVarbergDashBoard.Repository
 {
     public interface IApplicantRepository
     {
-        
+
         Task<CompetenceDistribution> GetCompetenceDistributionAsync();
         Task<StatusDistribution> GetStatusDistributionAsync();
 
         //Define function that shows how many people applied for all educations
         Task<TotalApplicants> GetTotalApplicantsAsync();
-        
+
         Task<GenderDistribution> GetGenderDistributionAsync();
 
         //Define function to get gender split by Utbildning
@@ -27,6 +27,8 @@ namespace CampusVarbergDashBoard.Repository
 
 
 
+        Task<IEnumerable<Applicant>> GetApplicantsLocAsync();
+        Task UpdateApplicantCoordinatesAsync(Applicant applicant);
 
     }
 }

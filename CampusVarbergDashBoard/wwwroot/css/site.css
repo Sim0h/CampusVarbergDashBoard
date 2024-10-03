@@ -66,8 +66,10 @@ body {
 }
 
 
-.overview-container{
-    margin:5px;
+.overview-container {
+    margin: 5px;
+    width: 90%;
+    margin-left: 5%;
 }
 
 .overview-title{
@@ -82,17 +84,31 @@ body {
 }
 
 
+
+
 /* DashboardLayout element styles  */
 #defaultLayout {
     padding: 10px;
 }
 
 #defaultLayout .e-panel .e-panel-container {
-    vertical-align: middle;
-    font-weight: 600;
+    vertical-align: top;
+    font-weight: bold;
     font-size: 20px;
     text-align: center;
-    line-height: 160px;
+    padding: 10px;
+
+}
+
+#defaultLayout .e-panel .e-panel-header{
+    margin-top: 0;
+    padding: 10px;
+}
+
+#defaultLayout .e-panel .e-panel-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
