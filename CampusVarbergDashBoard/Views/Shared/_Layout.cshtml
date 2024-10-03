@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CampusVarbergDashBoard.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.1.48/fluent.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.syncfusion.com/ej2/27.1.48/dist/ej2.min.js"></script>
 </head>
 <body>
     <header>
         <div class="logo-header m-sm-3">
-            <img class="logo" src="Img/campus_logo_2x.png" alt="Campus Varberg Logga" style="width: 15%" />
+            <img class="logo" src="~/Img/campus_logo_2x.png" alt="Campus Varberg Logga" style="width: 15%" />
         </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm sticky-navbar">
             <div class="container-fluid">
@@ -33,7 +34,7 @@
                         </li>
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark nav-button" asp-area="" asp-controller="Home" asp-action=""><strong>Kontakt</strong></a>
+                            <a class="nav-link text-dark nav-button" asp-area="" asp-controller="Home" asp-action="Kontakt"><strong>Kontakt</strong></a>
 
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                            @*  @await Component.InvokeAsync("GenderDistribution")
