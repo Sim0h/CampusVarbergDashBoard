@@ -28,5 +28,15 @@ namespace CampusVarbergDashBoard.Repository
             }
 
         }
+
+        public async Task UpdateApplicantCoordinatesAsync(Applicant applicant)
+        {
+            using (var connection = GetConnection())
+            {
+                string updateQuery = "UPDATE dbo.ExcelData SET Latitude = @Latitude, Longitude = @Longitude WHERE Postnummer = @Postnummer AND Ort = @Ort";
+                await connection.ExecuteAsync(updateQuery, new { applicant.Latitude, applicant.Longitud, applicant.Postnummer, applicant.Ort });
+            }
+        }
+
     }
 }
