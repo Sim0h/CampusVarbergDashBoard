@@ -18,11 +18,6 @@ namespace CampusVarbergDashBoard.Controllers
             _logger = logger;
             _configuration = configuration;
         }
-        public async Task<IActionResult> Index()
-        {
-            var applicants = await _applicantRepo.GetAllApplicantsAsync();
-            return View(applicants);
-        }
 
 
         public async Task<IEnumerable<Applicant>> GetApplicantsByEducationAsync(string educationFilter)
@@ -40,6 +35,10 @@ namespace CampusVarbergDashBoard.Controllers
             }
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
 
 
 

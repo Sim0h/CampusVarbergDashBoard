@@ -26,9 +26,6 @@
         .Select(g => new { Kön = g.Key, Count = g.Count() })
         .ToList();
 
-
-
-
 }
 
     <div class="dropdown-container">
@@ -51,33 +48,6 @@
             <button type="submit" class="btn btn-primary">Sök</button>
         </div>
     </div>
-<div class="pie-chart-container">
-    <ejs-accumulationchart id="utbildningChart" title="Utbildning Distribution">
-        <e-accumulationchart-legendsettings visible="true"></e-accumulationchart-legendsettings>
-        <e-accumulation-series-collection>
-            <e-accumulation-series dataSource="@utbildningData" xName="Utbildning" yName="Count" name="Utbildning" innerRadius="40%">
-                <e-accumulationseries-datalabel visible="true" name="Utbildning">
-                </e-accumulationseries-datalabel>
-            </e-accumulation-series>
-        </e-accumulation-series-collection>
-    </ejs-accumulationchart>
-</div>
-
-<div class="pie-chart-container">
-    <ejs-accumulationchart id="sexChart" title="Könsfördelning">
-        <e-accumulationchart-legendsettings visible="true"></e-accumulationchart-legendsettings>
-        <e-accumulationchart-center x="50%" y="50%"></e-accumulationchart-center>
-        <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
-        <e-accumulation-series-collection>
-            <e-accumulation-series dataSource="@sexData" xName="Kön" yName="Count" name="Kön" innerRadius="40%">
-                <e-accumulationseries-datalabel visible="true" name="Kön">
-                </e-accumulationseries-datalabel>
-            </e-accumulation-series>
-        </e-accumulation-series-collection>
-    </ejs-accumulationchart>
-</div>
-
-
 
 
    <style>
