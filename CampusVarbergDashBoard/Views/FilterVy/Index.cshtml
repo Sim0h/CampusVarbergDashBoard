@@ -15,7 +15,7 @@
     var termin = new string[] { "Alla terminer", "Vårtermin", "Hösttermin" };
 
     var utbildningData = Model
-        .Where(a=> !a.Utbildning.Contains("INSTÄLLD"))
+        // .Where(a=> !a.Utbildning.Contains("INSTÄLLD"))
         .GroupBy(a => a.Utbildning)
         .Select(g => new { Utbildning = g.Key, Count = g.Count() })
         .ToList();
