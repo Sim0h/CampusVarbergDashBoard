@@ -18,6 +18,7 @@ namespace CampusVarbergDashBoard
             builder.Services.AddScoped<IApplicantRepository>(provider => new ApplicantRepository(connectionString));
             builder.Services.AddScoped<GeoCodingService>();
 
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
