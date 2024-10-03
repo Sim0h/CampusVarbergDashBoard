@@ -23,7 +23,7 @@ namespace CampusVarbergDashBoard.Repository
 
 
 
-        Task<IEnumerable<Applicant>> GetAllApplicantsAsync();
+
         Task UpdateApplicantCoordinatesAsync(Applicant applicant);
 
     }
