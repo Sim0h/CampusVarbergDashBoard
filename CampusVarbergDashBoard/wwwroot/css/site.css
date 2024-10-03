@@ -30,6 +30,8 @@ body {
 .nav-item a{
     width: 120px;
     text-align:center;
+    padding: 10px;
+
 }
 
 /*.navbar-nav{
@@ -38,18 +40,46 @@ body {
 
 .navbar {
     background-color: #f6bf45 !Important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 .nav-button:hover {
-    background-color: #D2E6EF !Important;
+    background-color: #6abdc4 !Important;
+    color: white !important;
 }
 
 .nav-item.separator {
-    border-left: 1px solid black; /* Vänsterkant på Inställningar */
-    margin-left: 8%; /* Utrymme till vänster om strecket */
+    position: relative; /* Gör det möjligt att placera pseudo-elementet */
+    margin-left:8%;
     padding-left: 8%; /* Utrymme till vänster om innehållet */
 }
 
+.nav-item.separator::before {
+    content: ""; /* Skapa ett tomt innehåll för linjen */
+    position: absolute; /* Positionera den absolut */
+    left: -8%; /* Utrymme till vänster */
+    top: 50%; /* Centrera den vertikalt */
+    transform: translateY(-50%); /* Justera för att centrerade linjen vertikalt */
+    height: 70%; /* Sätt höjden på linjen */
+    border-left: 1px solid black; /* Linjens stil */
+}
+
+
+.overview-container{
+    margin:5px;
+}
+
+.overview-title{
+    margin:20px 0;
+    
+}
+
+.sticky-navbar {
+    position: -webkit-sticky; /* För Safari */
+    position: sticky !important;
+    top: 0 !important;
+}
 
 
 /* DashboardLayout element styles  */
@@ -64,5 +94,7 @@ body {
     text-align: center;
     line-height: 160px;
 }
+
+
 
 
