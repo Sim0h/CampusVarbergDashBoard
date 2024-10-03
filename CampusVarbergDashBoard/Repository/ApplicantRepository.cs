@@ -123,7 +123,24 @@ namespace CampusVarbergDashBoard.Repository
         {
             return new SqlConnection(_connectionString);
         }
+        //plockar ut relevant data ifrån databas för att få location för inmemory 
+        public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                    SELECT 
+                        ID,
+                        Postnummer, 
+                        Ort, 
+                        Latitude, 
+                        Longitud
+                    FROM dbo.ExcelData";
 
+                // Hämta alla relevanta fält som en lista för karta
+                return (await connection.QueryAsync<Applicant>(query)).ToList();
+            }
+        }
 
         public async Task UpdateApplicantCoordinatesAsync(Applicant applicant)
         {

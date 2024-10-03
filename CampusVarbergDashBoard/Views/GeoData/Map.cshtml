@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+    <!-- jQuery och Select2 inkluderade i rätt ordning -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     <style>
         #map {
             height: 725px;
@@ -15,57 +21,99 @@
 </head>
 <body>
 
+    <!-- Dropdown-meny -->
+    <select id="applicant-dropdown" style="width: 100%; margin-bottom: 15px;"></select>
+    
+    <!-- Kartan -->
     <div id="map"></div>
 
     <script>
-        var map = L.map('map').setView([61.0, 10.0], 5);
+        $(document).ready(function () {
+            // Initiera kartan
+            var map = L.map('map').setView([61.0, 10.0], 5);
 
+            var bounds = [
+                [54.5, 4.0],
+                [70.0, 31.0]
+            ];
 
-        var bounds = [
-            [54.5, 4.0],
-            [70.0, 31.0]
-        ];
+            map.setMaxBounds(bounds);
+            map.on('drag', function () {
+                map.panInsideBounds(bounds, { animate: false });
+            });
 
-        map.setMaxBounds(bounds);
-        map.on('drag', function () {
-            map.panInsideBounds(bounds, { animate: false });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 18,
+                minZoom: 5
+            }).addTo(map);
+
+            // Hämta och populera dropdown-menyn med postnummer/orter
+            fetch('/GeoData/applicant-stats')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Full data response:', data); // Kontrollera den fullständiga responsen
+                    
+                    // Kontrollera om data.ValidStats är korrekt definierad och en array
+                    if (data.ValidStats && Array.isArray(data.ValidStats)) {
+                        var dropdown = $('#applicant-dropdown');
+
+                        // Lägg till giltiga alternativ i dropdown-menyn
+                        data.ValidStats.forEach(item => {
+                            dropdown.append(new Option(`${item.Ort} (${item.Postnummer}) - ${item.AntalSokande} sökande`, item.Postnummer));
+                        });
+
+                        // Initialisera Select2 på dropdown-menyn för att göra den sökbar
+                        dropdown.select2({
+                            placeholder: "Välj ort eller postnummer...",
+                            allowClear: true,
+                            width: 'resolve'
+                        });
+                    } else {
+                        console.error('ValidStats is not defined or not an array:', data.ValidStats);
+                    }
+                })
+                .catch(error => console.error('Error fetching applicant stats:', error));
+
+            // Hämta heatmap-data och skapa heatmapen
+            fetch('/GeoData/heatmap-data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Full response data:', data);
+
+                    // Kontrollera att data.Coordinates är korrekt definierad och en array
+                    if (data.coordinates && Array.isArray(data.coordinates)) {
+                        var heatmapPoints = data.coordinates.map(point => [point.latitude, point.longitud]);
+
+                        L.heatLayer(heatmapPoints, {
+                            radius: 20,
+                            blur: 15,
+                            maxZoom: 10,
+                            gradient: {
+                                0.1: 'blue',
+                                0.3: 'lime',
+                                0.5: 'yellow',
+                                0.6: 'orange',
+                                1.0: 'red'
+                            },
+                            max: 1.0
+                        }).addTo(map);
+                    } else {
+                        console.error('Invalid data format or empty coordinates:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching heatmap data:', error));
         });
-
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-            maxZoom: 18,
-            minZoom: 5
-        }).addTo(map);
-
-
-        fetch('/GeoData/heatmap-data')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-
-                var heatmapPoints = data.map(point => [point.latitude, point.longitud]);
-
-                L.heatLayer(heatmapPoints, {
-                    radius: 20,
-                    blur: 15,
-                    maxZoom: 10,
-                    gradient: {
-                        0.1: 'blue',
-                        0.3: 'lime',
-                        0.5: 'yellow',
-                        0.6: 'orange',
-                        1.0: 'red'
-                    },
-                    max: 1.0,
-                }).addTo(map);
-            }).catch(error => console.error('Error fetching heatmap data:', error));
     </script>
 </body>
 </html>
-
-

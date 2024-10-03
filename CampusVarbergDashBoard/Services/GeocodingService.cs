@@ -7,6 +7,7 @@ namespace CampusVarbergDashBoard.Services
     {
         private readonly string _googleMapsApiKey = "";
 
+        //för att hämta long och lat via API längrefram för att skickas till databas
         public async Task<(double Latitude, double Longitude)> GetCoordinatesAsync(string postalCode, string City)
         {
             string url = $"https://maps.googleapis.com/maps/api/geocode/json?address={HttpUtility.UrlEncode(postalCode)},+{HttpUtility.UrlEncode(City)}&key={_googleMapsApiKey}";
@@ -35,7 +36,7 @@ namespace CampusVarbergDashBoard.Services
             return (0, 0);
         }
 
-
+        //placeholder för data för heatmap
         public (double Latitude, double Longitude) GetInMemoryCoordinates(string postalCode, string city)
         {
 
