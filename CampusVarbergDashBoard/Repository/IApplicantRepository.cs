@@ -21,7 +21,7 @@ namespace CampusVarbergDashBoard.Repository
         Task<IEnumerable<string>> GetAllEducationsAsync();
         Task<IEnumerable<string>> GetAllTermsAsync();
 
-
+        Task<IEnumerable<Applicant>> GetApplicantsLocAsync();
         Task UpdateApplicantCoordinatesAsync(Applicant applicant);
 
     }
