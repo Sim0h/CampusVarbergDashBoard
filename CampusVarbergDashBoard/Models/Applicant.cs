@@ -5,8 +5,12 @@ namespace CampusVarbergDashBoard.Models
 {
     public class Applicant
     {
+        public int ID { get; set; }
         public string Utbildning { get; set; }
+
         public DateTime Födelsedatum { get; set; }
+
+
         public string Kön { get; set; }
         public string Postnummer { get; set; }
         public string Ort { get; set; }

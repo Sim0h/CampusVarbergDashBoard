@@ -66,8 +66,10 @@ body {
 }
 
 
-.overview-container{
-    margin:5px;
+.overview-container {
+    margin: 5px;
+    width: 90%;
+    margin-left: 5%;
 }
 
 .overview-title{
@@ -80,6 +82,8 @@ body {
     position: sticky !important;
     top: 0 !important;
 }
+
+
 
 
 /* DashboardLayout element styles  */
