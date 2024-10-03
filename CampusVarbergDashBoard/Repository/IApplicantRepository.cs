@@ -5,6 +5,7 @@ namespace CampusVarbergDashBoard.Repository
 {
     public interface IApplicantRepository
     {
+
         //Implementera filter för status Erbjuden_plats(tackat ja) , Erbjuden_plats(tackat nej) , Reservplats , Ej antagen
         //Filter för Behörighet, ja eller nej
 
@@ -20,6 +21,10 @@ namespace CampusVarbergDashBoard.Repository
         Task<IEnumerable<string>> GetAllEducationsAsync();
         Task<IEnumerable<string>> GetAllTermsAsync();
 
+
+
+        Task<IEnumerable<Applicant>> GetAllApplicantsAsync();
+        Task UpdateApplicantCoordinatesAsync(Applicant applicant);
 
     }
 }
