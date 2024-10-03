@@ -92,11 +92,23 @@ body {
 }
 
 #defaultLayout .e-panel .e-panel-container {
-    vertical-align: middle;
-    font-weight: 600;
+    vertical-align: top;
+    font-weight: bold;
     font-size: 20px;
     text-align: center;
-    line-height: 160px;
+    padding: 10px;
+
+}
+
+#defaultLayout .e-panel .e-panel-header{
+    margin-top: 0;
+    padding: 10px;
+}
+
+#defaultLayout .e-panel .e-panel-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
