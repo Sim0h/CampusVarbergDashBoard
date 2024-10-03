@@ -1,22 +1,3 @@
-﻿@model IEnumerable<Applicant>
-               
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    @foreach(var applicant in Model)
-    {
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">@applicant.Fodelsedatum</h5>
-                <p class="card-text">@applicant.Utbildning</p>
-                <p class="card-text">@applicant.Kön</p>
-                <p class="card-text">@applicant.Postnummer</p>
-                <p class="card-text">@applicant.Ort</p>
-                <p class="card-text">@applicant.Land</p>
-                <p class="card-text">@applicant.Registrerad</p>
-                <p class="card-text">@applicant.Behörig</p>
-            </div>
-        </div>
-    })
-
-</div>
+﻿@{
+    ViewBag.Title = "Home Page";
+}

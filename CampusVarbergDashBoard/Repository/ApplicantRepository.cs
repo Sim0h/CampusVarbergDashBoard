@@ -1,4 +1,5 @@
-﻿using CampusVarbergDashBoard.Models;
+﻿using CampusVarbergDashBoard.FilterData;
+using CampusVarbergDashBoard.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
@@ -13,21 +14,112 @@ namespace CampusVarbergDashBoard.Repository
             _connectionString = connectionString;
         }
 
+
+
+        //Hämtar alla ansökande
+        public async Task<TotalApplicants> GetTotalApplicantsAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = "SELECT COUNT(ID) FROM dbo.ExcelData";
+                int totalApplicantsCount = await connection.ExecuteScalarAsync<int>(query);
+
+                return new TotalApplicants
+                {
+                    TotalApplicantsCount = totalApplicantsCount
+                };
+            }
+        }
+
+        //Hämtar alla utbildningar
+        public async Task<IEnumerable<string>> GetAllEducationsAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = "SELECT DISTINCT Utbildning FROM dbo.ExcelData";
+                return await connection.QueryAsync<string>(query);
+            }
+        }
+
+        //Hämtar alla terminer
+        public Task<IEnumerable<string>> GetAllTermsAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = "SELECT DISTINCT Termin FROM dbo.ExcelData";
+                return connection.QueryAsync<string>(query);
+            }
+        }
+
+        public Task<CompetenceDistribution> GetCompetenceDistributionAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                                SELECT
+                                    SUM(CASE WHEN Behörighet = 'Ja' THEN 1 ELSE 0 END) AS CompetenceCount,
+                                    SUM(CASE WHEN Behörighet = 'Nej' THEN 1 ELSE 0 END) AS NonCompetenceCount
+                                FROM dbo.ExcelData";
+
+                return connection.QueryFirstOrDefaultAsync<CompetenceDistribution>(query);
+
+            }
+        }
+
+
+        //Hämtar könsfördelning för alla ansökande
+        public async Task<GenderDistribution> GetGenderDistributionAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                                SELECT
+                                    SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
+                                    SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount 
+                                 FROM dbo.ExcelData";
+
+                return await connection.QueryFirstOrDefaultAsync<GenderDistribution>(query);
+
+            }
+        }
+
+        //Hämtar könsfördelning för en specifik utbildning
+        public async Task<GenderDistribution> GetGenderDistributionByEducationAsync(string education, string term)
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                                SELECT
+                                    SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
+                                    SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount 
+                                FROM dbo.ExcelData
+                                WHERE Utbildning = @Education AND Termin = @Term";
+
+                return await connection.QueryFirstOrDefaultAsync<GenderDistribution>(query, new { Education = education, Term = term });
+            }
+
+        }
+
+        public async Task<StatusDistribution> GetStatusDistributionAsync()
+        {
+            using(var connection = GetConnection())
+            {
+                string query = @"
+                                SELECT
+                                    SUM(CASE WHEN Status = 'Erbjuden plats (tackat ja)' THEN 1 ELSE 0 END) AS OfferedPlaceAcceptedCount,
+                                    SUM(CASE WHEN Status = 'Erbjuden plats (tackat nej)' THEN 1 ELSE 0 END) AS OfferedPlaceDeclinedCount,
+                                    SUM(CASE WHEN Status = 'Reservplats' THEN 1 ELSE 0 END) AS ReservePlaceCount,
+                                    SUM(CASE WHEN Status = 'Ej antagen' THEN 1 ELSE 0 END) AS NotAcceptedCount
+                                FROM dbo.ExcelData";
+
+                return await connection.QueryFirstOrDefaultAsync<StatusDistribution>(query);
+            }
+        }
+
         private SqlConnection GetConnection()
         {
             return new SqlConnection(_connectionString);
         }
 
-        public async Task<IEnumerable<Applicant>> GetAllApplicantsAsync()
-        {
-
-            using (var connection = GetConnection())
-            {
-                string query = "SELECT Utbildning, Födelsedatum, Kön, Postnummer, Ort, Land, Registrerad, Inlämnad, Behörig, Sen_Anmälan, Status, Erbjuden_Plats_Datum, Urval, Longitud, Latitude from dbo.ExcelData";
-                return (await connection.QueryAsync<Applicant>(query)).ToList();
-            }
-        }
-
-        
     }
 }

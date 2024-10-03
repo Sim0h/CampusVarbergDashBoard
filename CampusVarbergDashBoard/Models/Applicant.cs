@@ -5,6 +5,7 @@ namespace CampusVarbergDashBoard.Models
 {
     public class Applicant
     {
+        public int ID { get; set; }
         public string Utbildning { get; set; }
         public DateTime Fodelsedatum { get; set; }
         public string Kön { get; set; }
@@ -16,7 +17,7 @@ namespace CampusVarbergDashBoard.Models
         public string Behörig { get; set; }
         public string SenAnmälan { get; set; }
         public string Status { get; set; }
-        public bool ErbjudenPlats { get; set; }
+        public string ErbjudenPlats { get; set; }
         public string Urval { get; set; }
         public double Longitud { get; set; }
         public double Latitude { get; set; }

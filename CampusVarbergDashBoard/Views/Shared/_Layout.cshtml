@@ -26,6 +26,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            @await Component.InvokeAsync("GenderDistribution")
+                            @await Component.InvokeAsync("TotalApplicants")
+                            @await Component.InvokeAsync("Competence")
                         </li>
                     </ul>
                 </div>

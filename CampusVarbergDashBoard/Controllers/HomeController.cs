@@ -15,10 +15,9 @@ namespace CampusVarbergDashBoard.Controllers
             _logger = logger;
 		}
 
-		public async Task <IActionResult> Index()
+		public IActionResult Index()
 		{
-            var applicants = await _applicantRepo.GetAllApplicantsAsync();
-            return View(applicants);
+			return View();
         }
 
 		public IActionResult Privacy()
