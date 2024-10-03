@@ -1,26 +1,34 @@
 ﻿@model IEnumerable<Applicant>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-</div>
 
 @{
+
     var utbildning = new string[] { "Alla YH Utbildningar", "Digital analytiker", "Elkonstruktör, Varberg", "Energitekniker med specialisering vindkraft",
     "IT-projektledare", "Järnvägsprojektör", "Laborant", "Logistiker", "Medicinsk vårdadministratör", "Processtekniker - hållbar produktion",
     "Projektledare inriktning vindkraft", "Redovisningskonsult", "Rådgivare bank och placering", "Solenergiprojektör", "Systemutvecklare .NET",
     "Vatten- och biogastekniker", "VVS-ingenjör - energi och teknik"};
 
-
-
     var kön = new string[] { "Alla Kön", "Kvinna", "Man" };
-
-
 
     var år = new string[] { "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016" };
 
-
-
     var termin = new string[] { "Alla terminer", "Vårtermin", "Hösttermin" };
+
+    var utbildningData = Model
+        .Where(a=> !a.Utbildning.Contains("INSTÄLLD"))
+        .GroupBy(a => a.Utbildning)
+        .Select(g => new { Utbildning = g.Key, Count = g.Count() })
+        .ToList();
+
+
+    var sexData = Model
+        .GroupBy(a => a.Kön)
+        .Select(g => new { Kön = g.Key, Count = g.Count() })
+        .ToList();
+
+
+
+
 }
 
     <div class="dropdown-container">
@@ -43,6 +51,31 @@
             <button type="submit" class="btn btn-primary">Sök</button>
         </div>
     </div>
+<div class="pie-chart-container">
+    <ejs-accumulationchart id="utbildningChart" title="Utbildning Distribution">
+        <e-accumulationchart-legendsettings visible="true"></e-accumulationchart-legendsettings>
+        <e-accumulation-series-collection>
+            <e-accumulation-series dataSource="@utbildningData" xName="Utbildning" yName="Count" name="Utbildning" innerRadius="40%">
+                <e-accumulationseries-datalabel visible="true" name="Utbildning">
+                </e-accumulationseries-datalabel>
+            </e-accumulation-series>
+        </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+</div>
+
+<div class="pie-chart-container">
+    <ejs-accumulationchart id="sexChart" title="Könsfördelning">
+        <e-accumulationchart-legendsettings visible="true"></e-accumulationchart-legendsettings>
+        <e-accumulationchart-center x="50%" y="50%"></e-accumulationchart-center>
+        <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+        <e-accumulation-series-collection>
+            <e-accumulation-series dataSource="@sexData" xName="Kön" yName="Count" name="Kön" innerRadius="40%">
+                <e-accumulationseries-datalabel visible="true" name="Kön">
+                </e-accumulationseries-datalabel>
+            </e-accumulation-series>
+        </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+</div>
 
 
 
@@ -115,4 +148,9 @@
        .card {
            margin-bottom: 10px;
        }
+
+    .pie-chart-container {
+        margin-top: 20px;
+        text-align: center;
+    }
    </style>
