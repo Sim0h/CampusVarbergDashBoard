@@ -32,16 +32,23 @@ namespace CampusVarbergDashBoard.Repository
         }
 
         //Hämtar alla utbildningar
-        public async Task<IEnumerable<string>> GetAllEducationsAsync()
+        public async Task<IEnumerable<EducationDistribution>> GetAllEducationsAsync()
         {
             using (var connection = GetConnection())
             {
-                string query = "SELECT DISTINCT Utbildning FROM dbo.ExcelData";
-                return await connection.QueryAsync<string>(query);
+                await connection.OpenAsync();
+
+                    string query = @"
+                        SELECT Utbildning AS Name, COUNT(*) AS NumberOfApplicants
+                            FROM Applicants
+                            GROUP BY Utbildning";
+
+                return await connection.QueryAsync<EducationDistribution>(query);
             }
         }
 
         //Hämtar alla terminer
+        //On hold då terminer inte definerats som kolumn i Databasen
         public Task<IEnumerable<string>> GetAllTermsAsync()
         {
             using (var connection = GetConnection())
@@ -152,5 +159,22 @@ namespace CampusVarbergDashBoard.Repository
         }
 
 
+        public async Task<IEnumerable<Applicant>> GetMenAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = "SELECT * FROM dbo.ExcelData WHERE Kön = 'Man'";
+                return await connection.QueryAsync<Applicant>(query);
+            }
+        }
+
+        public async Task<IEnumerable<Applicant>> GetWomenAsync()
+        {
+            using(var connection = GetConnection())
+            {
+                string query = "SELECT * FROM dbo.ExcelData WHERE Kön = 'Kvinna'";
+                return await connection.QueryAsync<Applicant>(query);
+            }
+        }
     }
 }
