@@ -69,6 +69,7 @@ namespace CampusVarbergDashBoard.Repository
         }
 
 
+
         //Hämtar könsfördelning för alla ansökande
         public async Task<GenderDistribution> GetGenderDistributionAsync()
         {
@@ -122,6 +123,17 @@ namespace CampusVarbergDashBoard.Repository
         {
             return new SqlConnection(_connectionString);
         }
+
+
+        public async Task UpdateApplicantCoordinatesAsync(Applicant applicant)
+        {
+            using (var connection = GetConnection())
+            {
+                string updateQuery = "UPDATE dbo.ExcelData SET Latitude = @Latitude, Longitude = @Longitude WHERE Postnummer = @Postnummer AND Ort = @Ort";
+                await connection.ExecuteAsync(updateQuery, new { applicant.Latitude, applicant.Longitud, applicant.Postnummer, applicant.Ort });
+            }
+        }
+
 
     }
 }

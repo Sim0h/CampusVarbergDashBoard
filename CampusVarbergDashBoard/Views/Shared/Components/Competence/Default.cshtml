@@ -1,7 +1,17 @@
 ﻿@model CompetenceDistribution
 
-<div class="competence-distribution">
-    <h4>Behörighet</h4>
-    <p>Antal Behöriga: @Model.CompetenceCount</p>
-    <p>Icke-Behöriga: @Model.NonCompetenceCount</p>
-</div>
+@{
+    List<CompetenceDistribution> data = new List<CompetenceDistribution>
+    {
+        new CompetenceDistribution { xValue="Behörig", yValue = Model.CompetenceCount },
+        new CompetenceDistribution { xValue ="Ej behörig",  yValue = Model.NonCompetenceCount },
+    };
+}
+<ejs-accumulationchart id="competence" width="70%" height="70%">
+    <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center">
+    </e-accumulationchart-legendsettings>
+    <e-accumulation-series-collection>
+        <e-accumulation-series dataSource="data" xName="xValue" yName="yValue" name="Behöriga" innerRadius="40%">
+        </e-accumulation-series>
+    </e-accumulation-series-collection>
+</ejs-accumulationchart>
