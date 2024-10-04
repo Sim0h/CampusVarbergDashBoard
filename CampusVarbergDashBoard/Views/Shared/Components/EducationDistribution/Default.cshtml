@@ -1,9 +1,17 @@
 ﻿@model IEnumerable<EducationDistribution>
 
-<div>
-    <h3>Education Distribution</h3>
-    <canvas id="educationPieChart"></canvas>
-</div>
+
+
+<ejs-accumulationchart id="gender" width="70%" height="70%">
+    <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
+    </e-accumulationchart-legendsettings>
+    <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+    <e-accumulation-series-collection>
+        <e-accumulation-series dataSource="@(Model)" xName="Name" yName="NumberOfApplicants" name="Sökta Utbildningar" innerRadius="40%">
+        </e-accumulation-series>
+    </e-accumulation-series-collection>
+</ejs-accumulationchart>
+
 
 
 

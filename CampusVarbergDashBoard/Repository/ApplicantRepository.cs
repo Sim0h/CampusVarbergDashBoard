@@ -40,8 +40,8 @@ namespace CampusVarbergDashBoard.Repository
 
                     string query = @"
                         SELECT Utbildning AS Name, COUNT(*) AS NumberOfApplicants
-                            FROM Applicants
-                            GROUP BY Utbildning";
+                            FROM dbo.ExcelData 
+                            GROUP BY Utbildning"; // under from stod det Applicants, har ingen tabell vid namn Applicants :) 
 
                 return await connection.QueryAsync<EducationDistribution>(query);
             }

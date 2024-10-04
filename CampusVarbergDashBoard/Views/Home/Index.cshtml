@@ -70,7 +70,21 @@
                         </e-dashboardlayout-panel>
 
                         <!--Panel 4 Donut-->
-                        <e-dashboardlayout-panel id="Panel4" sizeX="2" sizeY="2" row="2" col="0" content="<div>4</div>">
+                        <e-dashboardlayout-panel id="Panel4" sizeX="2" sizeY="2" row="2" col="0">
+                              <e-content-template>
+                                <div>
+									<div class="e-panel-container">
+										<div class="e-panel-header">
+											<div>
+												Kompetensfördelning
+											</div>
+										</div>
+										<div class="e-panel-content">
+											@await Component.InvokeAsync("EducationDistribution")
+										</div>
+									</div>
+								</div>
+                            </e-content-template>
                         </e-dashboardlayout-panel>
 
                         <!--Panel 5 Donut-->
