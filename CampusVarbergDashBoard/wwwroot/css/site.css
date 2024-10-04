@@ -91,24 +91,26 @@ body {
     padding: 10px;
 }
 
-#defaultLayout .e-panel .e-panel-container {
+ .e-panel .e-panel-container {
     vertical-align: top;
     font-weight: bold;
-    font-size: 20px;
-    text-align: center;
     padding: 10px;
 
-}
+ }
 
-#defaultLayout .e-panel .e-panel-header{
-    margin-top: 0;
-    padding: 10px;
-}
+ .e-panel .e-panel-header {
+        font-size: 20px;
+        margin-top: 0;
+        padding: 10px;
+        text-align: center;
+ }
 
-#defaultLayout .e-panel .e-panel-content {
+ .e-panel .e-panel-content {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 8px;
+    text-align: left;
 }
 
 
