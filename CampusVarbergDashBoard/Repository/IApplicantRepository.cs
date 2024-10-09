@@ -22,6 +22,8 @@ namespace CampusVarbergDashBoard.Repository
         Task<IEnumerable<Applicant>> GetMenAsync();
         //Filter by female only
         Task<IEnumerable<Applicant>> GetWomenAsync();
+        //function for age Distribution in the database
+        Task<IEnumerable<AgeDistribution>> GetAgeDistributionAsync();
 
 
 

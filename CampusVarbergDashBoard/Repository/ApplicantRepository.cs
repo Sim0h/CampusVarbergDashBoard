@@ -14,10 +14,13 @@ namespace CampusVarbergDashBoard.Repository
 			_connectionString = connectionString;
 		}
 
+        private SqlConnection GetConnection()
+        {
+            return new SqlConnection(_connectionString);
+        }
 
-
-		//Hämtar alla ansökande
-		public async Task<TotalApplicants> GetTotalApplicantsAsync()
+        //Hämtar alla ansökande
+        public async Task<TotalApplicants> GetTotalApplicantsAsync()
 		{
 			using (var connection = GetConnection())
 			{
@@ -127,10 +130,7 @@ namespace CampusVarbergDashBoard.Repository
 			}
 		}
 
-		private SqlConnection GetConnection()
-		{
-			return new SqlConnection(_connectionString);
-		}
+		
 		//plockar ut relevant data ifrån databas för att få location för inmemory 
 		public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync()
 		{
@@ -177,5 +177,40 @@ namespace CampusVarbergDashBoard.Repository
 				return await connection.QueryAsync<Applicant>(query);
 			}
 		}
-	}
+
+        public async Task<IEnumerable<AgeDistribution>> GetAgeDistributionAsync()
+        {
+            using(var connection = GetConnection())
+			{
+				await connection.OpenAsync();
+				string query = "SELECT Födelsedatum FROM dbo.ExcelData WHERE Födelsedatum is NOT NULL";
+				var birthdates = await connection.QueryAsync<DateTime>(query);
+
+				var ageDistribution = birthdates.Select(b => DateTime.Now.Year - b.Year)
+					.GroupBy(age => GetAgeRange(age))
+					.Select(g => new AgeDistribution
+					{
+						AgeRange = g.Key,
+						Count = g.Count()
+					}).ToList();
+
+				return ageDistribution;
+            }
+        }
+
+		private string GetAgeRange(int age)
+		{
+			if(age < 20) return "Under 20";
+			if(age <= 25) return "20-25";
+            if (age <= 30) return "26-30";
+            if (age <= 35) return "31-35";
+            if (age <= 40) return "36-40";
+            if (age <= 45) return "41-45";
+            if (age <= 50) return "46-50";
+            if (age <= 55) return "51-55";
+            if (age <= 60) return "56-60";
+            return "Over 60";
+
+        }
+    }
 }
