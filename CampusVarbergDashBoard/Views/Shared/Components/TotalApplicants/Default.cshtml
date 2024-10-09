@@ -1,8 +1,15 @@
 ﻿@model TotalApplicants
 
-<div class="card">
+<div class="card custom-card">
     <div class="card-body">
-        <h4>Antal sökande</h4>
-        <p>Antal sökande: @Model.TotalApplicantsCount</p>
+        <h2>Totalt: @Model.TotalApplicantsCount st</h2>
     </div>
 </div>
+
+<style>
+    .custom-card{
+        border: none;
+        box-shadow: none;
+        width:auto;
+    }
+</style>
