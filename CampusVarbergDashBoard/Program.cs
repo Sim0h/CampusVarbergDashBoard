@@ -17,6 +17,7 @@ namespace CampusVarbergDashBoard
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddScoped<IApplicantRepository>(provider => new ApplicantRepository(connectionString));
             builder.Services.AddScoped<GeoCodingService>();
+            builder.Services.AddScoped<IYearRepository>(provider => new YearRepository(connectionString));
 
 
             // Add services to the container.

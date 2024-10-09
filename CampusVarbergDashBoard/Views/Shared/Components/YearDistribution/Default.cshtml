@@ -1,0 +1,19 @@
+﻿@model IEnumerable<CampusVarbergDashBoard.FilterData.YearDistribution>
+
+@if (Model != null && Model.Any())
+
+{
+    <ul>
+        @foreach (var item in Model)
+
+        {
+            <li>@item.Year - @item.Utbildning - @item.Kön</li>
+        }
+    </ul>
+}
+
+else
+
+{
+    <p>No data available.</p>
+}
