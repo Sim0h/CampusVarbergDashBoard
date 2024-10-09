@@ -209,7 +209,7 @@ namespace CampusVarbergDashBoard.Repository
             if (age <= 50) return "46-50";
             if (age <= 55) return "51-55";
             if (age <= 60) return "56-60";
-            return "Over 60";
+            return "Över 60";
 
         }
     }
