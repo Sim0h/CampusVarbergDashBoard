@@ -1,0 +1,61 @@
+﻿@model IEnumerable<AgeDistribution>
+
+@{
+    var ageRangeOrder = new List<string>
+    {
+        "Under 20", "20-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "Över 60",
+    };
+
+    var ageDistributionData = Model
+        .Select(ad => new { ad.AgeRange, ad.Count })
+        .OrderBy(ad => ageRangeOrder.IndexOf(ad.AgeRange))
+        .ToList();
+
+    ViewBag.dataSource = ageDistributionData;
+}
+
+<ejs-chart id="ageDistributionChart">
+    <e-chart-primaryxaxis valueType="Category"></e-chart-primaryxaxis>
+    <e-chart-primaryyaxis></e-chart-primaryyaxis>
+    <e-series-collection>
+        <e-series dataSource="ViewBag.dataSource" xName="AgeRange" yName="Count" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Column">
+        </e-series>
+    </e-series-collection>
+    <e-chart-tooltipsettings enable="true"></e-chart-tooltipsettings>
+</ejs-chart>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var chart = new ej.charts.Chart({
+                // Chart title
+                title: 'Age Distribution',
+                // Initialize the primary X axis
+                primaryXAxis: {
+                    valueType: 'Category',
+                    title: 'Age Range'
+                },
+                // Initialize the primary Y axis
+                primaryYAxis: {
+                    title: 'Count'
+                },
+                // Chart series
+                series: [{
+                    dataSource: @Html.Raw(Json.Serialize(ViewBag.dataSource)),
+                    xName: 'AgeRange',
+                    yName: 'Count',
+                    type: 'Column'
+                }],
+                // Tooltip for the chart
+                tooltip: {
+                    enable: true
+                }
+            });
+            chart.appendTo('#ageDistributionChart');
+        });
+    </script>
+}
+
+
+
+
