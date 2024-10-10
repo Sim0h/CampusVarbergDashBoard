@@ -22,8 +22,8 @@ namespace CampusVarbergDashBoard.Models
         public string Status { get; set; }
         public string ErbjudenPlats { get; set; }
         public string Urval { get; set; }
-        public double Longitud { get; set; }
-        public double Latitude { get; set; }
+        public double? Longitud { get; set; }
+        public double? Latitude { get; set; }
         public int Ålder { get; set; }
 
     }
