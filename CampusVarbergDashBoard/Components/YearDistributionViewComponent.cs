@@ -2,6 +2,7 @@
 using CampusVarbergDashBoard.Models;
 using CampusVarbergDashBoard.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace CampusVarbergDashBoard.Components
 {
@@ -21,41 +22,49 @@ namespace CampusVarbergDashBoard.Components
         public async Task<IViewComponentResult> InvokeAsync(string utbildning, string kön, string år, string termin)
         {
             // Get all applicants initially
-           IEnumerable<Applicant> filteredApplicants = await _IYearRepository.GetApplicantsAsync();
-    Console.WriteLine($"Initial applicants count: {filteredApplicants.Count()}");
+            IEnumerable<Applicant> filteredApplicants = await _IYearRepository.GetApplicantsAsync();
+            Console.WriteLine($"Initial applicants count: {filteredApplicants.Count()}");
 
-    // Apply filters
-    filteredApplicants = ApplyGenderFilter(filteredApplicants, kön);
-    Console.WriteLine($"After gender filter: {filteredApplicants.Count()}");
+            // Apply filters
+            filteredApplicants = ApplyEducationFilter(filteredApplicants, utbildning);
+            Console.WriteLine($"After education filter: {filteredApplicants.Count()}");
 
-    filteredApplicants = ApplyEducationFilter(filteredApplicants, utbildning);
-    Console.WriteLine($"After education filter: {filteredApplicants.Count()}");
+            filteredApplicants = ApplyGenderFilter(filteredApplicants, kön);
+            Console.WriteLine($"After gender filter: {filteredApplicants.Count()}");
 
-    filteredApplicants = ApplyYearFilter(filteredApplicants, år);
-    Console.WriteLine($"After year filter: {filteredApplicants.Count()}");
+            // Set the start year to 2016 and end year to the current year
+            int startYear = 2016;
+            int endYear = DateTime.Now.Year;
+            filteredApplicants = ApplyYearFilter(filteredApplicants, år, startYear, endYear);
+            Console.WriteLine($"After year filter: {filteredApplicants.Count()}");
 
-    filteredApplicants = await ApplyTermFilter(filteredApplicants, termin);
-    Console.WriteLine($"After term filter: {filteredApplicants.Count()}");
+            filteredApplicants = await ApplyTermFilter(filteredApplicants, termin);
+            Console.WriteLine($"After term filter: {filteredApplicants.Count()}");
 
             // Transform filtered applicants into YearDistribution objects
             var yearDistributions = filteredApplicants.Select(a => new YearDistribution
             {
                 Year = a.Inlämnad,
                 Utbildning = a.Utbildning,
-                Kön = a.Kön
+                Kön = a.Kön,
+                Termin = a.Inlämnad
             });
 
             return View(yearDistributions);
         }
 
-        private IEnumerable<Applicant> ApplyYearFilter(IEnumerable<Applicant> applicants, string år)
+
+        private IEnumerable<Applicant> ApplyYearFilter(IEnumerable<Applicant> applicants, string år, int startYear, int endYear)
         {
-            if (!string.IsNullOrEmpty(år))
+            if (string.IsNullOrEmpty(år) || år == "Alla år")
+            {
+                return applicants.Where(a => a.Inlämnad.Year >= startYear && a.Inlämnad.Year <= endYear);
+            }
+            else
             {
                 int year = int.Parse(år);
                 return applicants.Where(a => a.Inlämnad.Year == year);
             }
-            return applicants;
         }
         private IEnumerable<Applicant> ApplyGenderFilter(IEnumerable<Applicant> applicants, string kön)
         {
@@ -78,37 +87,20 @@ namespace CampusVarbergDashBoard.Components
         {
             if (!string.IsNullOrEmpty(termin) && termin != "Alla terminer")
             {
-                var termDates = await _IYearRepository.GetSpecificTermAsync(termin);
-                Console.WriteLine($"Term dates for {termin}: {string.Join(", ", termDates)}");
-
-                // Log each term date individually
-                foreach (var termDate in termDates)
+                var termDates = new List<string>();
+                for (int year = 2016; year <= DateTime.Now.Year; year++)
                 {
-                    Console.WriteLine($"Term date: {termDate}");
+                    var specificTermDates = await _IYearRepository.GetSpecificTermAsync(termin, year);
+                    termDates.AddRange(specificTermDates);
                 }
 
-                var filteredApplicants = new List<Applicant>();
-
-                foreach (var applicant in applicants)
-                {
-                    var applicantDate = applicant.Inlämnad.ToString("yyyy-MM-dd");
-                    if (termDates.Contains(applicantDate))
-                    {
-                        filteredApplicants.Add(applicant);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Applicant {applicant.ID} with date {applicantDate} does not match any term date.");
-                    }
-                }
-
-                Console.WriteLine($"Filtered applicants count for term {termin}: {filteredApplicants.Count()}");
-
+                var filteredApplicants = applicants.Where(a => termDates.Contains(a.Inlämnad.ToString("yyyy-MM-dd"))).ToList();
                 return filteredApplicants;
             }
             return applicants;
         }
 
     }
+
 }
 
