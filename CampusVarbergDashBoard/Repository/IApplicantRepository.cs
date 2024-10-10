@@ -6,9 +6,6 @@ namespace CampusVarbergDashBoard.Repository
     public interface IApplicantRepository
     {
 
-        //Implementera filter för status Erbjuden_plats(tackat ja) , Erbjuden_plats(tackat nej) , Reservplats , Ej antagen
-        //Filter för Behörighet, ja eller nej
-
         Task<CompetenceDistribution> GetCompetenceDistributionAsync();
         Task<StatusDistribution> GetStatusDistributionAsync();
 
@@ -16,10 +13,21 @@ namespace CampusVarbergDashBoard.Repository
         Task<TotalApplicants> GetTotalApplicantsAsync();
 
         Task<GenderDistribution> GetGenderDistributionAsync();
+
         //Define function to get gender split by Utbildning
         Task<GenderDistribution> GetGenderDistributionByEducationAsync(string education, string term);
-        Task<IEnumerable<string>> GetAllEducationsAsync();
+        Task<IEnumerable<EducationDistribution>> GetAllEducationsAsync();
         Task<IEnumerable<string>> GetAllTermsAsync();
+        //Filter by men only
+        Task<IEnumerable<Applicant>> GetMenAsync();
+        //Filter by female only
+        Task<IEnumerable<Applicant>> GetWomenAsync();
+        //function for age Distribution in the database
+        Task<IEnumerable<AgeDistribution>> GetAgeDistributionAsync();
+
+
+
+
 
         Task<IEnumerable<Applicant>> GetApplicantsLocAsync();
         Task UpdateApplicantCoordinatesAsync(Applicant applicant);

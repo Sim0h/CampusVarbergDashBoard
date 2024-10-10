@@ -35,16 +35,20 @@
                             <a class="nav-link text-dark nav-button" asp-area="" asp-controller="GeoData" asp-action="Map"><strong>Kartvy</strong></a>
                         </li>
                         <li class="nav-item separator">
-                            <a class="nav-link text-dark nav-button" asp-area="" asp-controller="Home" asp-action=""><strong>Inställningar</strong></a>
+                            <a class="nav-link text-dark nav-button" asp-area="" asp-controller="Home" asp-action="Settings"><strong>Inställningar</strong></a>
                         </li>
                         <li class="nav-item">
 
                             <a class="nav-link text-dark nav-button" asp-area="" asp-controller="Home" asp-action="Kontakt"><strong>Kontakt</strong></a>
 
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                           @*  @await Component.InvokeAsync("GenderDistribution")
+
+@*                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+ *@                           @*  @await Component.InvokeAsync("GenderDistribution")
                             @await Component.InvokeAsync("TotalApplicants")
                             @await Component.InvokeAsync("Competence") *@
+
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
 
                         </li>
                     </ul>

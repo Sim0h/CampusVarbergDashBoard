@@ -22,6 +22,24 @@
                                     <div class="e-panel-container">
                                         <div class="e-panel-header">
                                             <div>
+                                                Antal sökande
+                                            </div>
+                                        </div>
+                                        <div class="e-panel-content">
+                                            @await Component.InvokeAsync("TotalApplicants")
+                                        </div>
+                                    </div>
+                                </div>
+                            </e-content-template>
+                        </e-dashboardlayout-panel>
+
+                        <!--Panel 2 Donut-->
+                        <e-dashboardlayout-panel id="Panel2" sizeX="2" sizeY="2" row="0" col="2">
+                            <e-content-template>
+                                <div>
+                                    <div class="e-panel-container">
+                                        <div class="e-panel-header">
+                                            <div>
                                                 Könsfördelning
                                             </div>
                                         </div>
@@ -32,49 +50,59 @@
                                 </div>
                             </e-content-template>
                         </e-dashboardlayout-panel>
-                                                
-                        <!--Panel 2 Donut-->
-                        <e-dashboardlayout-panel id="Panel2" sizeX="2" sizeY="2" row="0" col="2">
-                            <e-content-template>
-                                								<div>
-									<div class="e-panel-container">
-										<div class="e-panel-header">
-											<div>
-												Antal sökande
-											</div>
-										</div>
-										<div class="e-panel-content">
-											@await Component.InvokeAsync("TotalApplicants")
-										</div>
-									</div>
-								</div
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-                        
+
                         <!--Panel 3 Donut-->
                         <e-dashboardlayout-panel id="Panel3" sizeX="2" sizeY="2" row="2" col="0">
                             <e-content-template>
                                 <div>
-									<div class="e-panel-container">
-										<div class="e-panel-header">
-											<div>
-												Kompetensfördelning
-											</div>
-										</div>
-										<div class="e-panel-content">
-											@await Component.InvokeAsync("Competence")
-										</div>
-									</div>
-								</div>
+                                    <div class="e-panel-container">
+                                        <div class="e-panel-header">
+                                            <div>
+                                                Kompetensfördelning
+                                            </div>
+                                        </div>
+                                        <div class="e-panel-content">
+                                            @await Component.InvokeAsync("Competence")
+                                        </div>
+                                    </div>
+                                </div>
                             </e-content-template>
                         </e-dashboardlayout-panel>
 
                         <!--Panel 4 Donut-->
-                        <e-dashboardlayout-panel id="Panel4" sizeX="2" sizeY="2" row="2" col="0" content="<div>4</div>">
+                        <e-dashboardlayout-panel id="Panel4" sizeX="2" sizeY="2" row="2" col="0">
+                            <e-content-template>
+                                <div>
+                                    <div class="e-panel-container">
+                                        <div class="e-panel-header">
+                                            <div>
+                                                Sökta Utbildningar
+                                            </div>
+                                        </div>
+                                        <div class="e-panel-content">
+                                            @await Component.InvokeAsync("EducationDistribution")
+                                        </div>
+                                    </div>
+                                </div>
+                            </e-content-template>
                         </e-dashboardlayout-panel>
 
-                        <!--Panel 5 Donut-->
-                        <e-dashboardlayout-panel id="Panel5" sizeX="2" sizeY="2" row="2" col="2" content="<div>5</div>">
+                        <!--Panel 5 Age Chart-->
+                        <e-dashboardlayout-panel id="Panel5" sizeX="6" sizeY="3" row="4" col="0">
+                            <e-content-template>
+                                <div>
+                                    <div class="e-panel-container">
+                                        <div class="e-panel-header">
+                                            <div>
+                                                Åldersfördelning
+                                            </div>
+                                        </div>
+                                        <div class="e-panel-content">
+                                            @await Component.InvokeAsync("AgeDistribution")
+                                        </div>
+                                    </div>
+                                </div>
+                            </e-content-template>
                         </e-dashboardlayout-panel>
 
                         <!--Panel 6 Kartvy-->
