@@ -1,6 +1,7 @@
 ﻿using CampusVarbergDashBoard.FilterData;
 using CampusVarbergDashBoard.Models;
 using CampusVarbergDashBoard.Repository;
+using CampusVarbergDashBoard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -10,6 +11,7 @@ namespace CampusVarbergDashBoard.Components
     {
         private readonly IYearRepository _IYearRepository;
         private readonly IApplicantRepository _IApplicantRepository;
+        
 
         public YearDistributionViewComponent(IYearRepository IYearRepository, IApplicantRepository applicantRepository)
         {
@@ -17,40 +19,56 @@ namespace CampusVarbergDashBoard.Components
             _IApplicantRepository = applicantRepository;
         }
 
-
-
         public async Task<IViewComponentResult> InvokeAsync(string utbildning, string kön, string år, string termin)
         {
-            // Get all applicants initially
-            IEnumerable<Applicant> filteredApplicants = await _IYearRepository.GetApplicantsAsync();
-            Console.WriteLine($"Initial applicants count: {filteredApplicants.Count()}");
+            var filteredApplicants = await GetFilteredApplicantsAsync(utbildning, kön, år, termin);
 
-            // Apply filters
-            filteredApplicants = ApplyEducationFilter(filteredApplicants, utbildning);
-            Console.WriteLine($"After education filter: {filteredApplicants.Count()}");
+            var viewModel = new FilterViewModel
+            {
+                YearDistributions = GetYearDistributions(filteredApplicants),
+                GenderDistribution = GetGenderDistribution(filteredApplicants),
+                CompetenceDistribution = GetCompetenceDistribution(filteredApplicants)
+            };
 
-            filteredApplicants = ApplyGenderFilter(filteredApplicants, kön);
-            Console.WriteLine($"After gender filter: {filteredApplicants.Count()}");
+            return View(viewModel);
+        }
 
-            // Set the start year to 2016 and end year to the current year
-            int startYear = 2016;
-            int endYear = DateTime.Now.Year;
-            filteredApplicants = ApplyYearFilter(filteredApplicants, år, startYear, endYear);
-            Console.WriteLine($"After year filter: {filteredApplicants.Count()}");
+        private async Task<IEnumerable<Applicant>> GetFilteredApplicantsAsync(string utbildning, string kön, string år, string termin)
+        {
+            var applicants = await _IYearRepository.GetApplicantsAsync();
+            applicants = ApplyEducationFilter(applicants, utbildning);
+            applicants = ApplyGenderFilter(applicants, kön);
+            applicants = ApplyYearFilter(applicants, år, 2016, DateTime.Now.Year);
+            return await ApplyTermFilter(applicants, termin);
+        }
 
-            filteredApplicants = await ApplyTermFilter(filteredApplicants, termin);
-            Console.WriteLine($"After term filter: {filteredApplicants.Count()}");
-
-            // Transform filtered applicants into YearDistribution objects
-            var yearDistributions = filteredApplicants.Select(a => new YearDistribution
+        private IEnumerable<YearDistribution> GetYearDistributions(IEnumerable<Applicant> applicants)
+        {
+            return applicants.Select(a => new YearDistribution
             {
                 Year = a.Inlämnad,
                 Utbildning = a.Utbildning,
                 Kön = a.Kön,
                 Termin = a.Inlämnad
             });
+        }
 
-            return View(yearDistributions);
+        private GenderDistribution GetGenderDistribution(IEnumerable<Applicant> applicants)
+        {
+            return new GenderDistribution
+            {
+                MaleCount = applicants.Count(a => a.Kön == "Man"),
+                FemaleCount = applicants.Count(a => a.Kön == "Kvinna")
+            };
+        }
+
+        private CompetenceDistribution GetCompetenceDistribution(IEnumerable<Applicant> applicants)
+        {
+            return new CompetenceDistribution
+            {
+                CompetenceCount = applicants.Count(a => a.Behörig == "Ja"),
+                NonCompetenceCount = applicants.Count(a => a.Behörig == "Nej")
+            };
         }
 
 

@@ -1,19 +1,8 @@
-﻿@model IEnumerable<CampusVarbergDashBoard.FilterData.YearDistribution>
+﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
 
-@if (Model != null && Model.Any())
 
-{
-    <ul>
-        @foreach (var item in Model)
+@await Html.PartialAsync("_GenderFilterData", Model)
+@await Html.PartialAsync("_CompetenceFilterData", Model)
 
-        {
-            <li>@item.Year - @item.Utbildning - @item.Kön</li>
-        }
-    </ul>
-}
 
-else
 
-{
-    <p>No data available.</p>
-}
