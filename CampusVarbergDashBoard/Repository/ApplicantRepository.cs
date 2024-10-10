@@ -102,7 +102,6 @@ namespace CampusVarbergDashBoard.Repository
             }
 
         }
-
         public async Task<StatusDistribution> GetStatusDistributionAsync()
         {
             using (var connection = GetConnection())
@@ -123,7 +122,7 @@ namespace CampusVarbergDashBoard.Repository
         {
             return new SqlConnection(_connectionString);
         }
-        //plockar ut relevant data ifrån databas för att få location för inmemory 
+
         public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync()
         {
             using (var connection = GetConnection())
@@ -137,7 +136,6 @@ namespace CampusVarbergDashBoard.Repository
                         Longitud
                     FROM dbo.ExcelData";
 
-                // Hämta alla relevanta fält som en lista för karta
                 return (await connection.QueryAsync<Applicant>(query)).ToList();
             }
         }
@@ -146,11 +144,32 @@ namespace CampusVarbergDashBoard.Repository
         {
             using (var connection = GetConnection())
             {
-                string updateQuery = "UPDATE dbo.ExcelData SET Latitude = @Latitude, Longitude = @Longitude WHERE Postnummer = @Postnummer AND Ort = @Ort";
-                await connection.ExecuteAsync(updateQuery, new { applicant.Latitude, applicant.Longitud, applicant.Postnummer, applicant.Ort });
+                string checkQuery = "SELECT Latitude, Longitud FROM dbo.ExcelData WHERE ID = @ID";
+                var existingCoordinates = await connection.QueryFirstOrDefaultAsync<Applicant>(checkQuery, new { ID = applicant.ID });
+
+                if (existingCoordinates != null && (existingCoordinates.Latitude.HasValue && existingCoordinates.Longitud.HasValue))
+                {
+
+                    return;
+                }
+                string updateQuery = "UPDATE dbo.ExcelData SET Latitude = @Latitude, Longitud = @Longitud WHERE ID = @ID";
+                await connection.ExecuteAsync(updateQuery, new { Latitude = applicant.Latitude, Longitud = applicant.Longitud, ID = applicant.ID });
             }
         }
+        public async Task<IEnumerable<Applicant>> GetApplicantsWithoutCoordinatesAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+            SELECT 
+                ID,
+                Postnummer, 
+                Ort
+            FROM dbo.ExcelData
+            WHERE Latitude IS NULL OR Longitud IS NULL";
 
-
+                return (await connection.QueryAsync<Applicant>(query)).ToList();
+            }
+        }
     }
 }
