@@ -27,17 +27,17 @@
     width: 45px;
 }
 
-input{
+.darkmode-checkbox {
     width: 0;
     height: 0;
     visibility: hidden;
 }
 
-input:checked + .darkmode-toggler{
+.darkmode-checkbox:checked + .darkmode-toggler {
     background: #242424;
 }
 
-input:checked + .darkmode-toggler:after{
+.darkmode-checkbox:checked + .darkmode-toggler:after {
     left: 98px;
     transform: translateX(-100%);
     background: linear-gradient(180deg, #777, #3a3a3a);
@@ -64,11 +64,11 @@ input:checked + .darkmode-toggler:after{
     z-index: 100;
 }
 
-input:checked + .darkmode-toggler .fa-sun {
+.darkmode-checkbox:checked + .darkmode-toggler .fa-sun {
     color: #7e7e7e;
 }
 
-input:checked + .darkmode-toggler .fa-moon {
+.darkmode-checkbox:checked + .darkmode-toggler .fa-moon {
     color: #fff;
 }
 
