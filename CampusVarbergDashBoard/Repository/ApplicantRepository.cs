@@ -152,7 +152,7 @@ namespace CampusVarbergDashBoard.Repository
                 var existingCoordinates = await connection.QueryFirstOrDefaultAsync<Applicant>(
                     checkQuery, new { ID = applicant.ID });
 
-                if (existingCoordinates != null && 
+                if (existingCoordinates != null &&
                     (existingCoordinates.Latitude.HasValue && existingCoordinates.Longitud.HasValue))
                 {
                     return;
@@ -224,7 +224,7 @@ namespace CampusVarbergDashBoard.Repository
             if (age <= 60) return "56-60";
             return "Över 60";
         }
-
+        
         public async Task<IEnumerable<Applicant>> GetApplicantsWithoutCoordinatesAsync()
         {
             using (var connection = GetConnection())
@@ -238,6 +238,33 @@ namespace CampusVarbergDashBoard.Repository
                     WHERE Latitude IS NULL OR Longitud IS NULL";
 
                 return (await connection.QueryAsync<Applicant>(query)).ToList();
+            }
+        }
+
+
+        //ifall ålder ska uppdatera i databasen
+        public async Task<IEnumerable<Applicant>> GetApplicantsWithoutAgeAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                SELECT 
+                    ID,
+                    Födelsedatum,
+                    Registrerad
+                FROM dbo.ExcelData
+                WHERE Ålder IS NULL OR Ålder = 0";
+
+                return await connection.QueryAsync<Applicant>(query);
+            }
+        }
+        //ifall ålder ska uppdatera i databasen
+        public async Task UpdateApplicantAgeAsync(int applicantId, int age)
+        {
+            using (var connection = GetConnection())
+            {
+                string updateQuery = "UPDATE dbo.ExcelData SET Ålder = @Ålder WHERE ID = @ID";
+                await connection.ExecuteAsync(updateQuery, new { Ålder = age, ID = applicantId });
             }
         }
     }

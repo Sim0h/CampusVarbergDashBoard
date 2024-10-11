@@ -78,5 +78,38 @@ namespace CampusVarbergDashBoard.Services
                 return null; // Ogiltigt postnummer
             }
         }
+
+        public async Task UpdateApplicantsAgeAsync()
+        {
+            var applicants = await _applicantRepo.GetApplicantsWithoutAgeAsync();
+
+            foreach (var applicant in applicants)
+            {
+                if (applicant.Födelsedatum != default(DateTime) && applicant.Registrerad != default(DateTime))
+                {
+                    int age = CalculateAge(applicant.Födelsedatum, applicant.Registrerad);
+                    await _applicantRepo.UpdateApplicantAgeAsync(applicant.ID, age);
+
+                    
+                    Console.WriteLine($"Uppdaterad sökande - ID: {applicant.ID}, Ålder: {age}");
+                }
+                else
+                {
+                    Console.WriteLine($"Ogiltigt födelsedatum eller registreringsdatum för sökande ID {applicant.ID}");
+                }
+            }
+        }
+
+        private int CalculateAge(DateTime birthDate, DateTime registrationDate)
+        {
+            int age = registrationDate.Year - birthDate.Year;
+            if (registrationDate < birthDate.AddYears(age))
+            {
+                age--;
+            }
+            return age;
+        }
+
+
     }
 }
