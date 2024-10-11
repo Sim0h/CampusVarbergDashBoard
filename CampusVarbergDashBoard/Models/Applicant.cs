@@ -10,7 +10,6 @@ namespace CampusVarbergDashBoard.Models
 
         public DateTime Födelsedatum { get; set; }
 
-
         public string Kön { get; set; }
         public string Postnummer { get; set; }
         public string Ort { get; set; }
