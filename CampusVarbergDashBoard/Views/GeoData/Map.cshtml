@@ -9,6 +9,9 @@
     <div class="dropdown-item">
         <input type="text" id="postnummerDropdown" name="postnummerDropdown" />
     </div>
+    <div class="dropdown-item">
+        <input type="text" id="colorSchemeDropdown" name="colorSchemeDropdown" />
+    </div>
     <div class="button-container">
         <button type="button" class="btn btn-primary" id="filter-btn">Filtrera</button>
     </div>
@@ -20,15 +23,17 @@
 
 <div id="map" style="height: 725px; width: 100%;"></div>
 
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
 <script>
-    var jsonData = []; // För att lagra all JSON-data
-    var ortDropdown, postnummerDropdown;
+    var jsonData = []; // To store all JSON data
+    var ortDropdown, postnummerDropdown, colorSchemeDropdown;
+    var currentFilteredData = [];
 
-    // Initiera kartan
+    // Initialize the map
     var map = L.map('map', {
         center: [61.0, 10.0],
         zoom: 5,
@@ -36,6 +41,7 @@
         maxBoundsViscosity: 1.0
     });
 
+    // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 18,
@@ -44,13 +50,42 @@
 
     var heatmapLayer;
 
+    function isValidOrt(ort) {
+        // kontroll av giltigt ortnamn
+        var validPattern = /^[a-zA-ZåäöÅÄÖ\s\-]+$/;
+        return validPattern.test(ort) && ort.trim() !== '';
+    }
+
     function updateHeatmap(points) {
         if (heatmapLayer) {
             map.removeLayer(heatmapLayer);
         }
 
+        var selectedScheme = colorSchemeDropdown ? colorSchemeDropdown.value : 'standard';
+
+        var gradient;
+
+        switch (selectedScheme) {
+            case 'blue':
+                gradient = { 0.4: 'lightblue', 0.6: 'blue', 0.8: 'darkblue', 1: 'navy' };
+                break;
+            case 'greenRed':
+                gradient = { 0.4: 'green', 0.6: 'yellow', 0.8: 'orange', 1: 'red' };
+                break;
+            case 'monochrome':
+                gradient = { 0.4: '#ffffff', 0.6: '#aaaaaa', 0.8: '#555555', 1: '#000000' };
+                break;
+            default:
+                gradient = { 0.4: 'blue', 0.6: 'cyan', 0.7: 'lime', 0.8: 'yellow', 1: 'red' };
+        }
+
         if (points.length > 0) {
-            heatmapLayer = L.heatLayer(points, { radius: 30, blur: 20, maxZoom: 10 }).addTo(map);
+            heatmapLayer = L.heatLayer(points, {
+                radius: 30,
+                blur: 20,
+                maxZoom: 10,
+                gradient: gradient
+            }).addTo(map);
         } else {
             console.warn('Heatmap-punkter saknas, heatmapen uppdateras inte');
         }
@@ -64,18 +99,21 @@
         var orter = [...new Set(data.map(item => item.ort))];
         var postnummer = [...new Set(data.map(item => item.postnummer))];
 
-        // Sortera orter och flytta "Okänd Ort" till slutet
-        orter = orter.filter(ort => ort !== 'Okänd Ort');
+        // Remove 'Okänd Ort' and empty strings
+        orter = orter.filter(ort => ort !== 'Okänd Ort' && ort.trim() !== '');
+
+        // Sort and add 'Alla Orter' and 'Okänd Ort'
         orter.sort((a, b) => a.localeCompare(b, 'sv', { sensitivity: 'base' }));
         orter.unshift('Alla Orter');
         orter.push('Okänd Ort');
 
-        // Sortera postnummer och flytta "Okänt Postnummer" till slutet
+        // Sort postnummer and handle 'Okänt Postnummer'
         postnummer = postnummer.filter(pn => pn !== 'Okänt Postnummer');
         postnummer.sort((a, b) => a.localeCompare(b, 'sv', { numeric: true }));
         postnummer.unshift('Alla Postnummer');
         postnummer.push('Okänt Postnummer');
 
+        // Initialize or update ortDropdown
         if (!ortDropdown) {
             ortDropdown = new ej.dropdowns.DropDownList({
                 placeholder: 'Välj Ort',
@@ -92,6 +130,7 @@
             ortDropdown.dataBind();
         }
 
+        // Initialize or update postnummerDropdown
         if (!postnummerDropdown) {
             postnummerDropdown = new ej.dropdowns.DropDownList({
                 placeholder: 'Välj Postnummer',
@@ -115,7 +154,7 @@
 
         filteredPostnummer = [...new Set(filteredPostnummer)];
 
-        // Sortera postnummer och flytta "Okänt Postnummer" till slutet
+        // Sort and handle 'Okänt Postnummer'
         filteredPostnummer = filteredPostnummer.filter(pn => pn !== 'Okänt Postnummer');
         filteredPostnummer.sort((a, b) => a.localeCompare(b, 'sv', { numeric: true }));
         filteredPostnummer.unshift('Alla Postnummer');
@@ -126,30 +165,75 @@
         postnummerDropdown.dataBind();
     }
 
-    // Hämta all JSON-data från controller och visa den på kartan
+    function populateColorSchemes() {
+        var colorSchemes = [
+            { text: 'Standard', value: 'standard' },
+            { text: 'Blå Toner', value: 'blue' },
+            { text: 'Grön till Röd', value: 'greenRed' },
+            { text: 'Monokrom', value: 'monochrome' }
+        ];
+
+        colorSchemeDropdown = new ej.dropdowns.DropDownList({
+            placeholder: 'Välj Färgtema',
+            dataSource: colorSchemes,
+            fields: { text: 'text', value: 'value' },
+            value: 'standard',
+            change: function () {
+                updateHeatmapWithSelectedColorScheme();
+            }
+        });
+        colorSchemeDropdown.appendTo('#colorSchemeDropdown');
+    }
+
+    function updateHeatmapWithSelectedColorScheme() {
+        if (!currentFilteredData || currentFilteredData.length === 0) {
+            console.warn('Ingen filtrerad data tillgänglig.');
+            return;
+        }
+
+        var heatmapPoints = currentFilteredData.map(d => [parseFloat(d.latitude), parseFloat(d.longitude), parseFloat(d.antalSokande)]);
+        var validHeatmapPoints = heatmapPoints.filter(point =>
+            !isNaN(point[0]) && !isNaN(point[1]) && point[0] !== 0 && point[1] !== 0
+        );
+
+        updateHeatmap(validHeatmapPoints);
+    }
+
+    // Fetch för JSON data from controller and display it on the map
     fetch('/GeoData/heatmap-data')
         .then(response => response.json())
         .then(data => {
-            console.log('Data från servern:', data); // Logga data för felsökning
+            console.log('Data från servern:', data);
 
             if (data && data.coordinates) {
-                jsonData = data.coordinates; // Spara data i jsonData-variabeln
+                jsonData = data.coordinates;
+
+                
+                jsonData.forEach(item => {
+                    if (!isValidOrt(item.ort)) {
+                        item.ort = 'Okänd Ort';
+                    }
+                });
 
                 var heatmapPoints = jsonData.map(d => [parseFloat(d.latitude), parseFloat(d.longitude), parseFloat(d.antalSokande)]);
                 var validHeatmapPoints = heatmapPoints.filter(point =>
                     !isNaN(point[0]) && !isNaN(point[1]) && point[0] !== 0 && point[1] !== 0
                 );
 
-                updateHeatmap(validHeatmapPoints); // Visa alla data på heatmapen
-                populateDropdowns(jsonData); // Fyll dropdown-menyerna
-                updateApplicantCount(jsonData.reduce((acc, curr) => acc + curr.antalSokande, 0)); // Uppdatera antalet sökande
+                updateHeatmap(validHeatmapPoints);
+                populateDropdowns(jsonData);
+                populateColorSchemes();
+                updateApplicantCount(jsonData.reduce((acc, curr) => acc + curr.antalSokande, 0));
+
+                // Initialize currentFilteredData with all data
+                currentFilteredData = jsonData;
             } else {
                 console.warn('Ingen giltig data mottagen för heatmapen');
             }
         })
         .catch(error => console.error('Error loading data from controller:', error));
 
-    // Hantera filtreringsknappen
+    // Handle the filter button click
     document.getElementById('filter-btn').addEventListener('click', function () {
         if (!ortDropdown || !postnummerDropdown) {
             console.error('Dropdown-menyerna är inte initialiserade.');
@@ -159,18 +243,25 @@
         var selectedOrt = ortDropdown.value;
         var selectedPostnummer = postnummerDropdown.value;
 
-        // Filtrera data baserat på val i dropdown-menyerna
+        // Filter data based on dropdown selections
         var filteredData = jsonData.filter(item =>
             (selectedOrt === 'Alla Orter' || item.ort === selectedOrt) &&
             (selectedPostnummer === 'Alla Postnummer' || item.postnummer === selectedPostnummer)
         );
+
+        // Exclude 'Okänd Ort' if 'Alla Orter' is selected
+        if (selectedOrt === 'Alla Orter') {
+            filteredData = filteredData.filter(item => item.ort !== 'Okänd Ort');
+        }
+
+        currentFilteredData = filteredData;
 
         var heatmapPoints = filteredData.map(d => [parseFloat(d.latitude), parseFloat(d.longitude), parseFloat(d.antalSokande)]);
         var validHeatmapPoints = heatmapPoints.filter(point =>
             !isNaN(point[0]) && !isNaN(point[1]) && point[0] !== 0 && point[1] !== 0
         );
 
-        updateHeatmap(validHeatmapPoints); // Uppdatera heatmapen med filtrerad data
-        updateApplicantCount(filteredData.reduce((acc, curr) => acc + curr.antalSokande, 0)); // Uppdatera antalet sökande
+        updateHeatmap(validHeatmapPoints);
+        updateApplicantCount(filteredData.reduce((acc, curr) => acc + curr.antalSokande, 0));
     });
 </script>

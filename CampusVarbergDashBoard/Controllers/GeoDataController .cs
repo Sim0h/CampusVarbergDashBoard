@@ -60,7 +60,7 @@ namespace CampusVarbergDashBoard.Controllers
                 // Kontrollera om Ort och Postnummer kan vara omvända
                 if (ortIsNumeric && !postnummerIsNumeric)
                 {
-                    // Byt plats på dem
+                    
                     var temp = cleanedOrt;
                     cleanedOrt = cleanedPostnummer;
                     cleanedPostnummer = temp;
@@ -104,19 +104,19 @@ namespace CampusVarbergDashBoard.Controllers
                     }
                     else
                     {
-                        // Hoppa över om vi inte har några koordinater
+                        
                         continue;
                     }
                 }
 
-                // Uppdatera applicant-objektet med rengjorda värden
+                // Uppdatera applicant-objektet med rätt värden
                 applicant.Ort = cleanedOrt;
                 applicant.Postnummer = cleanedPostnummer;
 
                 cleanedApplicants.Add(applicant);
             }
 
-            // Gruppera och aggregera data
+            
             var coordinatesData = cleanedApplicants
                 .GroupBy(a => new { a.Ort, a.Postnummer, a.Latitude, a.Longitud })
                 .Select(g => new
