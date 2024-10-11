@@ -1,20 +1,29 @@
 ﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
 
 @{
-	var genderDistribution = Model.GenderDistribution;
-	var genderData = new List<object>
-	{
-		new { xValue = "Male", yValue = genderDistribution.MaleCount },
-		new { xValue = "Female", yValue = genderDistribution.FemaleCount }
-	};
+    var genderDistribution = Model?.GenderDistribution;
+    var genderData = new List<object>();
+
+    if (genderDistribution != null)
+    {
+        genderData.Add(new { xValue = "Man", yValue = genderDistribution.MaleCount, fill = "RGB(240, 159, 23)" });
+        genderData.Add(new { xValue = "Kvinna", yValue = genderDistribution.FemaleCount, fill = "RGB(0, 105, 110)" });
+    }
 }
 
-<ejs-accumulationchart id="genderforfilter" width="70%" height="70%">
-	<e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
-	</e-accumulationchart-legendsettings>
-	<e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
-	<e-accumulation-series-collection>
-		<e-accumulation-series dataSource="genderData" xName="xValue" yName="yValue" name="Könsfördelning" innerRadius="40%">
-		</e-accumulation-series>
-	</e-accumulation-series-collection>
-</ejs-accumulationchart>
+@if (genderDistribution != null)
+{
+    <ejs-accumulationchart id="genderforfilter" width="70%" height="70%">
+        <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
+        </e-accumulationchart-legendsettings>
+        <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+        <e-accumulation-series-collection>
+            <e-accumulation-series dataSource="genderData" xName="xValue" yName="yValue" name="Könsfördelning" innerRadius="40%" pointColorMapping="fill">
+            </e-accumulation-series>
+        </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+}
+else
+{
+    <p>Gender distribution data is not available.</p>
+}
