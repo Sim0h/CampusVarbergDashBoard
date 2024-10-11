@@ -8,8 +8,14 @@
 }
 
 .darkmode {
+/*    
+    Dark blue darkmode
     --base-color: #101425;
-    --background-color: #070b1d;
+    --background-color: #070b1d;*/
+/*  Dark grey dark mode  */
+    --base-color: #222;
+    --background-color: #1a1a1a;
+
     --text-color: white;
     --secondary-text: black;
     --img-invert: brightness(1000%);
