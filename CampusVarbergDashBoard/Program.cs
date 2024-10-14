@@ -18,6 +18,11 @@ namespace CampusVarbergDashBoard
             builder.Services.AddScoped<IApplicantRepository>(provider => new ApplicantRepository(connectionString));
             builder.Services.AddScoped<GeoCodingService>();
 
+            builder.Services.AddScoped<ApplicantService>();
+
+            builder.Services.AddScoped<IYearRepository>(provider => new YearRepository(connectionString));
+
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -27,6 +32,24 @@ namespace CampusVarbergDashBoard
 
 
             var app = builder.Build();
+
+            //Denna kontrollerar om det finns tomma long och lat och
+            //uppdaterar ifall det �r s�, men program.cs beh�ver vara async f�r det
+
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+
+            //    try
+            //    {
+            //        var applicantService = services.GetRequiredService<ApplicantService>();
+            //        await applicantService.UpdateApplicantsCoordinatesAsync();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine($"Ett fel uppstod vid uppdatering av koordinater: {ex.Message}");
+            //    }
+            //}
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

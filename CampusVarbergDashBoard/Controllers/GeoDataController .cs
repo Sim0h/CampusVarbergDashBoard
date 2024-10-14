@@ -3,10 +3,13 @@ using CampusVarbergDashBoard.Repository;
 using CampusVarbergDashBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CampusVarbergDashBoard.Controllers
 {
-
     public class GeoDataController : Controller
     {
         private readonly IApplicantRepository _applicantRepo;
@@ -18,177 +21,188 @@ namespace CampusVarbergDashBoard.Controllers
             _geoCodingService = geoCodingService;
         }
 
-        [HttpGet("coordinates")]
-        public async Task<IActionResult> GetApplicantsCoordinates()
-        {
-            // Hämta totalantalet ansökande
-            var totalApplicants = await _applicantRepo.GetTotalApplicantsAsync();
-
-            // Hämta alla relevanta ansökandes data
-            var applicants = await _applicantRepo.GetApplicantsLocAsync();
-
-            var coordinatesData = new List<object>();
-
-            foreach (var applicant in applicants)
-            {
-                if (applicant.Latitude == 0 && applicant.Longitud == 0)
-                {
-                    var coordinates = await _geoCodingService.GetCoordinatesAsync(applicant.Postnummer, applicant.Ort);
-
-                    applicant.Latitude = coordinates.Latitude;
-                    applicant.Longitud = coordinates.Longitude;
-
-                    await _applicantRepo.UpdateApplicantCoordinatesAsync(applicant);
-                }
-
-                coordinatesData.Add(new
-                {
-                    applicant.Postnummer,
-                    applicant.Ort,
-                    applicant.Latitude,
-                    applicant.Longitud
-                });
-            }
-
-            // Returnera koordinater och totalantalet ansökande
-            return Ok(new { TotalApplicants = totalApplicants.TotalApplicantsCount, Coordinates = coordinatesData });
-        }
-
-        [HttpGet("coordinates/memory")]
-        public async Task<IActionResult> GetApplicantsCoordinatesMemory()
-        {
-            // Hämta totalantalet ansökande
-            var totalApplicants = await _applicantRepo.GetTotalApplicantsAsync();
-
-            // Hämta alla relevanta ansökandes data
-            var applicants = await _applicantRepo.GetApplicantsLocAsync();
-
-            var coordinatesData = new List<object>();
-
-            foreach (var applicant in applicants)
-            {
-                if (applicant.Latitude == 0 && applicant.Longitud == 0)
-                {
-                    var coordinates = _geoCodingService.GetInMemoryCoordinates(applicant.Postnummer, applicant.Ort);
-
-                    applicant.Latitude = coordinates.Latitude;
-                    applicant.Longitud = coordinates.Longitude;
-
-                    // Om du vill spara dessa koordinater till databasen, avkommentera nästa rad
-                    // await _applicantRepo.UpdateApplicantCoordinatesAsync(applicant);
-                }
-
-                coordinatesData.Add(new
-                {
-                    applicant.Postnummer,
-                    applicant.Ort,
-                    applicant.Latitude,
-                    applicant.Longitud
-                });
-            }
-
-            // Returnera koordinater och totalantalet ansökande
-            return Ok(new { TotalApplicants = totalApplicants.TotalApplicantsCount, Coordinates = coordinatesData });
-        }
-
-
         [HttpGet("/GeoData/heatmap-data")]
         public async Task<IActionResult> GetHeatmapData()
         {
-            var totalApplicants = await _applicantRepo.GetTotalApplicantsAsync();
             var applicants = await _applicantRepo.GetApplicantsLocAsync();
 
-            var coordinatesData = new List<object>();
+            // Bygg mappingar från Postnummer till Ort och vice versa
+            var postnummerOrtMapping = applicants
+                .Select(a => new
+                {
+                    Postnummer = CleanPostnummer(a.Postnummer),
+                    Ort = CleanOrt(a.Ort)
+                })
+                .Where(a => !string.IsNullOrWhiteSpace(a.Postnummer) && !string.IsNullOrWhiteSpace(a.Ort))
+                .GroupBy(a => a.Postnummer)
+                .ToDictionary(g => g.Key, g => g.Select(a => a.Ort).Distinct().ToList());
+
+            var ortPostnummerMapping = applicants
+                .Select(a => new
+                {
+                    Ort = CleanOrt(a.Ort),
+                    Postnummer = CleanPostnummer(a.Postnummer)
+                })
+                .Where(a => !string.IsNullOrWhiteSpace(a.Ort) && !string.IsNullOrWhiteSpace(a.Postnummer))
+                .GroupBy(a => a.Ort)
+                .ToDictionary(g => g.Key, g => g.Select(a => a.Postnummer).Distinct().ToList());
+
+            var cleanedApplicants = new List<Applicant>();
 
             foreach (var applicant in applicants)
             {
-                // Använd in-memory koordinater
-                var coordinates = _geoCodingService.GetInMemoryCoordinates(applicant.Postnummer, applicant.Ort);
+                string cleanedOrt = CleanOrt(applicant.Ort);
+                string cleanedPostnummer = CleanPostnummer(applicant.Postnummer);
 
-                // Kontrollera att koordinater är giltiga
-                if (coordinates.Latitude != 0 && coordinates.Longitude != 0)
+                bool ortIsNumeric = IsNumeric(cleanedOrt);
+                bool postnummerIsNumeric = IsNumeric(cleanedPostnummer);
+
+                // Kontrollera om Ort och Postnummer kan vara omvända
+                if (ortIsNumeric && !postnummerIsNumeric)
                 {
-                    coordinatesData.Add(new
-                    {
-                        Latitude = coordinates.Latitude,
-                        Longitud = coordinates.Longitude
-                    });
+                    
+                    var temp = cleanedOrt;
+                    cleanedOrt = cleanedPostnummer;
+                    cleanedPostnummer = temp;
                 }
+
+                // Om Ort är ogiltig, försök hämta från Postnummer
+                if (string.IsNullOrWhiteSpace(cleanedOrt) || IsLikelyInvalidOrt(cleanedOrt))
+                {
+                    if (!string.IsNullOrWhiteSpace(cleanedPostnummer) && postnummerOrtMapping.TryGetValue(cleanedPostnummer, out var ortList))
+                    {
+                        cleanedOrt = ortList.First();
+                    }
+                    else
+                    {
+                        cleanedOrt = "Okänd Ort";
+                    }
+                }
+
+                // Om Postnummer är ogiltigt, försök hämta från Ort
+                if (string.IsNullOrWhiteSpace(cleanedPostnummer))
+                {
+                    if (!string.IsNullOrWhiteSpace(cleanedOrt) && ortPostnummerMapping.TryGetValue(cleanedOrt, out var postnummerList))
+                    {
+                        cleanedPostnummer = postnummerList.First();
+                    }
+                    else
+                    {
+                        cleanedPostnummer = "Okänt Postnummer";
+                    }
+                }
+
+                // Validera koordinater
+                if (!IsValidCoordinate(applicant.Latitude, applicant.Longitud))
+                {
+                    // Om koordinater saknas, kontrollera om orten är okänd
+                    if (cleanedOrt == "Okänd Ort" || cleanedPostnummer == "Okänt Postnummer")
+                    {
+                        // Tilldela standardkoordinater
+                        applicant.Latitude = 56.66;
+                        applicant.Longitud = 12.86;
+                    }
+                    else
+                    {
+                        
+                        continue;
+                    }
+                }
+
+                // Uppdatera applicant-objektet med rätt värden
+                applicant.Ort = cleanedOrt;
+                applicant.Postnummer = cleanedPostnummer;
+
+                cleanedApplicants.Add(applicant);
             }
 
-            // Returnera endast giltiga koordinater
-            return Ok(new { TotalApplicants = totalApplicants.TotalApplicantsCount, Coordinates = coordinatesData });
-        }
+            
+            var coordinatesData = cleanedApplicants
+                .GroupBy(a => new { a.Ort, a.Postnummer, a.Latitude, a.Longitud })
+                .Select(g => new
+                {
+                    ort = g.Key.Ort,
+                    postnummer = g.Key.Postnummer,
+                    latitude = g.Key.Latitude.Value,
+                    longitude = g.Key.Longitud.Value,
+                    antalSokande = g.Count()
+                })
+                .ToList();
 
-        [HttpGet("location-data")]
-        public async Task<IActionResult> GetLocationData()
-        {
-            // Hämta totalantalet ansökande
-            var totalApplicants = await _applicantRepo.GetTotalApplicantsAsync();
-
-            // Hämta alla relevanta ansökandes data
-            var applicants = await _applicantRepo.GetApplicantsLocAsync();
-
-            var locationData = applicants.Select(a => new
+            if (coordinatesData == null || coordinatesData.Count == 0)
             {
-                a.Postnummer,
-                a.Ort
-            });
+                return BadRequest("Ingen giltig data hittades.");
+            }
 
-            // Returnera platsdata och totalantalet ansökande
-            return Ok(new { TotalApplicants = totalApplicants.TotalApplicantsCount, LocationData = locationData });
+            return Ok(new { coordinates = coordinatesData });
         }
 
-        [HttpGet("total-applicants")]
-        public async Task<IActionResult> GetTotalApplicants()
+        // Hjälpfunktioner
+
+        private string CleanOrt(string ort)
         {
-            var totalApplicants = await _applicantRepo.GetTotalApplicantsAsync();
-            return Ok(totalApplicants);
+            if (string.IsNullOrWhiteSpace(ort))
+                return null;
+
+            ort = ort.Trim().ToLower();
+
+            return CapitalizeFirstLetter(ort);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        private string CleanPostnummer(string postnummer)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (string.IsNullOrWhiteSpace(postnummer))
+                return null;
+
+            
+            postnummer = postnummer.Replace(" ", "").Trim();
+
+            
+            if (postnummer.Length == 5 && IsNumeric(postnummer))
+            {
+                return postnummer;
+            }
+            else
+            {
+                return null; 
+            }
         }
-
-        [HttpGet("/GeoData/applicant-stats")]
-        public async Task<IActionResult> GetApplicantStats()
-        {
-            var applicants = await _applicantRepo.GetApplicantsLocAsync();
-
-            // Separera felaktiga postnummer/orter
-            var invalidStats = applicants
-                .Where(a => IsNumeric(a.Ort) || !IsNumeric(a.Postnummer))
-                .GroupBy(a => new { a.Postnummer, a.Ort })
-                .Select(group => new
-                {
-                    Postnummer = group.Key.Postnummer,
-                    Ort = group.Key.Ort,
-                    AntalSokande = group.Count()
-                })
-                .ToList();
-
-            // Separera giltiga postnummer/orter
-            var validStats = applicants
-                .Where(a => !IsNumeric(a.Ort) && IsNumeric(a.Postnummer) && !string.IsNullOrWhiteSpace(a.Ort))
-                .GroupBy(a => new { a.Postnummer, a.Ort })
-                .Select(group => new
-                {
-                    Postnummer = group.Key.Postnummer,
-                    Ort = group.Key.Ort,
-                    AntalSokande = group.Count()
-                })
-                .ToList();
-
-            return Ok(new { ValidStats = validStats, InvalidStats = invalidStats });
-        }
-
 
         private bool IsNumeric(string text)
         {
-            var cleanedText = text.Replace(" ", "");
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
             return text.All(char.IsDigit);
+        }
+
+        private bool IsLikelyInvalidOrt(string ort)
+        {
+            return IsNumeric(ort) || ContainsInvalidCharacters(ort);
+        }
+
+        private bool ContainsInvalidCharacters(string text)
+        {
+            return !text.All(c => char.IsLetter(c) || char.IsWhiteSpace(c) || c == '-');
+        }
+
+        private string CapitalizeFirstLetter(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            return char.ToUpper(text[0]) + text.Substring(1);
+        }
+
+        private bool IsValidCoordinate(double? latitude, double? longitude)
+        {
+            if (!latitude.HasValue || !longitude.HasValue)
+                return false;
+
+            double lat = latitude.Value;
+            double lng = longitude.Value;
+
+            return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
         }
 
         [HttpGet]

@@ -1,4 +1,4 @@
-﻿using CampusVarbergDashBoard.FilterData;
+using CampusVarbergDashBoard.FilterData;
 using CampusVarbergDashBoard.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -19,7 +19,7 @@ namespace CampusVarbergDashBoard.Repository
             return new SqlConnection(_connectionString);
         }
 
-        //Hämtar alla ansökande
+        // Hämtar alla ansökande
         public async Task<TotalApplicants> GetTotalApplicantsAsync()
         {
             using (var connection = GetConnection())
@@ -34,7 +34,7 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-        //Hämtar alla utbildningar
+
         public async Task<IEnumerable<EducationDistribution>> GetAllEducationsAsync()
         {
             using (var connection = GetConnection())
@@ -42,17 +42,18 @@ namespace CampusVarbergDashBoard.Repository
                 await connection.OpenAsync();
 
                 string query = @"
+
                         SELECT Utbildning AS Name, COUNT(*) AS NumberOfApplicants
                         FROM dbo.ExcelData
 						WHERE Utbildning NOT LIKE '%INSTÄLLD%'
                         GROUP BY Utbildning"; // under from stod det Applicants, har ingen tabell vid namn Applicants :) lade också till WHERE för att filtrera bort Inställda utbildningar
 
+           
                 return await connection.QueryAsync<EducationDistribution>(query);
             }
         }
 
-        //Hämtar alla terminer
-        //On hold då terminer inte definerats som kolumn i Databasen
+
         public Task<IEnumerable<string>> GetAllTermsAsync()
         {
             using (var connection = GetConnection())
@@ -65,64 +66,64 @@ namespace CampusVarbergDashBoard.Repository
         public async Task<CompetenceDistribution> GetCompetenceDistributionAsync()
         {
 
+
             using (var connection = GetConnection())
             {
-                await connection.OpenAsync(); // Ensure the connection is opened
+                await connection.OpenAsync();
 
                 string query = @"
-                        SELECT
-                            SUM(CASE WHEN Behörig = 'Ja' THEN 1 ELSE 0 END) AS CompetenceCount,
-                            SUM(CASE WHEN Behörig = 'Nej' THEN 1 ELSE 0 END) AS NonCompetenceCount
-                        FROM dbo.ExcelData";
+                    SELECT
+                        SUM(CASE WHEN Behörig = 'Ja' THEN 1 ELSE 0 END) AS CompetenceCount,
+                        SUM(CASE WHEN Behörig = 'Nej' THEN 1 ELSE 0 END) AS NonCompetenceCount
+                    FROM dbo.ExcelData";
+
 
                 return await connection.QueryFirstOrDefaultAsync<CompetenceDistribution>(query);
             }
         }
 
 
-
-        //Hämtar könsfördelning för alla ansökande
         public async Task<GenderDistribution> GetGenderDistributionAsync()
         {
             using (var connection = GetConnection())
             {
                 string query = @"
-                                SELECT
-                                    SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
-                                    SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount 
-                                 FROM dbo.ExcelData";
+
+                    SELECT
+                        SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
+                        SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount
+                    FROM dbo.ExcelData";
 
                 return await connection.QueryFirstOrDefaultAsync<GenderDistribution>(query);
-
             }
         }
 
-        //Hämtar könsfördelning för en specifik utbildning
+        // Hämtar könsfördelning för en specifik utbildning
+
         public async Task<GenderDistribution> GetGenderDistributionByEducationAsync(string education, string term)
         {
             using (var connection = GetConnection())
             {
                 string query = @"
-                                SELECT
-                                    SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
-                                    SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount 
-                                FROM dbo.ExcelData
-                                WHERE Utbildning = @Education AND Termin = @Term";
 
-                return await connection.QueryFirstOrDefaultAsync<GenderDistribution>(query, new { Education = education, Term = term });
+                    SELECT
+                        SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
+                        SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount
+                    FROM dbo.ExcelData
+                    WHERE Utbildning = @Education AND Termin = @Term";
+
+                return await connection.QueryFirstOrDefaultAsync<GenderDistribution>(
+                    query, new { Education = education, Term = term });
             }
-
         }
 
-        //THis function needs to see when the applicant was offered a place and if they accepted or declined
-        //Ändra Till Registrerad, Inlämnad , Erbjuden plats(tackat ja), Erbjuden plats(inskriven)
-        //HÄmta från erbjuden_plats_datum istället för status kolumner
+        public async Task<StatusDistribution> GetStatusDistributionAsync()
 
-        public async Task<IEnumerable<StatusDistribution>> GetStatusDistributionAsync(int? year)
         {
             using (var connection = GetConnection())
             {
                 string query = @"
+
                          SELECT
                             CAST(Registrerad AS DATE) AS Registrerad,
                             COUNT(CASE WHEN Registrerad IS NOT NULL THEN 1 ELSE NULL END) AS RegistreradCount,
@@ -148,7 +149,6 @@ namespace CampusVarbergDashBoard.Repository
 
 
 
-        //plockar ut relevant data ifrån databas för att få location för inmemory 
         public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync()
         {
             using (var connection = GetConnection())
@@ -171,8 +171,28 @@ namespace CampusVarbergDashBoard.Repository
         {
             using (var connection = GetConnection())
             {
-                string updateQuery = "UPDATE dbo.ExcelData SET Latitude = @Latitude, Longitude = @Longitude WHERE Postnummer = @Postnummer AND Ort = @Ort";
-                await connection.ExecuteAsync(updateQuery, new { applicant.Latitude, applicant.Longitud, applicant.Postnummer, applicant.Ort });
+
+                string checkQuery = "SELECT Latitude, Longitud FROM dbo.ExcelData WHERE ID = @ID";
+                var existingCoordinates = await connection.QueryFirstOrDefaultAsync<Applicant>(
+                    checkQuery, new { ID = applicant.ID });
+
+                if (existingCoordinates != null &&
+                    (existingCoordinates.Latitude.HasValue && existingCoordinates.Longitud.HasValue))
+                {
+                    return;
+                }
+
+                string updateQuery = @"
+                    UPDATE dbo.ExcelData 
+                    SET Latitude = @Latitude, Longitud = @Longitud 
+                    WHERE ID = @ID";
+
+                await connection.ExecuteAsync(updateQuery, new
+                {
+                    Latitude = applicant.Latitude,
+                    Longitud = applicant.Longitud,
+                    ID = applicant.ID
+                });
             }
         }
 
@@ -200,10 +220,14 @@ namespace CampusVarbergDashBoard.Repository
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-                string query = "SELECT Födelsedatum FROM dbo.ExcelData WHERE Födelsedatum is NOT NULL";
+
+
+                string query = "SELECT Födelsedatum FROM dbo.ExcelData WHERE Födelsedatum IS NOT NULL";
                 var birthdates = await connection.QueryAsync<DateTime>(query);
 
-                var ageDistribution = birthdates.Select(b => DateTime.Now.Year - b.Year)
+                var ageDistribution = birthdates
+                    .Select(b => DateTime.Now.Year - b.Year)
+
                     .GroupBy(age => GetAgeRange(age))
                     .Select(g => new AgeDistribution
                     {
@@ -227,7 +251,49 @@ namespace CampusVarbergDashBoard.Repository
             if (age <= 55) return "51-55";
             if (age <= 60) return "56-60";
             return "Över 60";
+        }
+        
+        public async Task<IEnumerable<Applicant>> GetApplicantsWithoutCoordinatesAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                    SELECT 
+                        ID,
+                        Postnummer, 
+                        Ort
+                    FROM dbo.ExcelData
+                    WHERE Latitude IS NULL OR Longitud IS NULL";
 
+                return (await connection.QueryAsync<Applicant>(query)).ToList();
+            }
+        }
+
+
+        //ifall ålder ska uppdatera i databasen
+        public async Task<IEnumerable<Applicant>> GetApplicantsWithoutAgeAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                SELECT 
+                    ID,
+                    Födelsedatum,
+                    Registrerad
+                FROM dbo.ExcelData
+                WHERE Ålder IS NULL OR Ålder = 0";
+
+                return await connection.QueryAsync<Applicant>(query);
+            }
+        }
+        //ifall ålder ska uppdatera i databasen
+        public async Task UpdateApplicantAgeAsync(int applicantId, int age)
+        {
+            using (var connection = GetConnection())
+            {
+                string updateQuery = "UPDATE dbo.ExcelData SET Ålder = @Ålder WHERE ID = @ID";
+                await connection.ExecuteAsync(updateQuery, new { Ålder = age, ID = applicantId });
+            }
         }
 
         public Task<IEnumerable<Applicant>> GetAllApplicantsAsync()

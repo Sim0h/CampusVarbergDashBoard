@@ -1,3 +1,30 @@
+:root {
+    --base-color: white;
+    --background-color: #dedfe4;
+    --text-color: black;
+    --secondary-text: white;
+    --img-invert: brightness(100%);
+    --link-text-color: #40658b;
+}
+
+.darkmode {
+/*    
+    Dark blue darkmode
+    --base-color: #101425;
+    --background-color: #070b1d;*/
+/*  Dark grey dark mode  */
+    --base-color: #2a2a2a;
+    --background-color: #1a1a1a;
+
+    --text-color: white;
+    --secondary-text: black;
+    --img-invert: brightness(1000%);
+    --link-text-color: #3075ba;
+}
+
+
+
+
 html {
   font-size: 14px;
 }
@@ -20,7 +47,8 @@ html {
 body {
     margin-bottom: 60px;
     font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-    background-color: #dedfe4;
+    background-color: var(--background-color);
+    color: var(--text-color); 
 }
 
 .nav-item{
@@ -83,6 +111,10 @@ body {
     top: 0 !important;
 }
 
+.logo{
+    filter: var(--img-invert);
+}
+
 
 
 
@@ -91,21 +123,23 @@ body {
     padding: 10px;
 }
 
- .e-panel .e-panel-container {
+.e-panel .e-panel-container {
     vertical-align: top;
     font-weight: bold;
     padding: 10px;
+    background-color: var(--base-color) !Important;
+    color: var(--text-color) !Important;
+}
 
- }
+.e-panel .e-panel-header {
+    font-size: 20px;
+    margin-top: 0;
+    padding: 10px;
+    text-align: center;
+    color: var(--text-color) !Important;
+}
 
- .e-panel .e-panel-header {
-        font-size: 20px;
-        margin-top: 0;
-        padding: 10px;
-        text-align: center;
- }
-
- .e-panel .e-panel-content {
+.e-panel .e-panel-content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -113,6 +147,75 @@ body {
     text-align: left;
 }
 
+.card {
+    background-color: var(--base-color) !important;
+}
 
+/*Kontakt*/
+.kontakt {
+    margin: 0 auto;
+    width: 80%;
+    background-color: var(--base-color);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.kontakt-content {
+    flex: 1;
+    min-width: 300px;
+    margin: 5% 6% 0 6%
+}
+
+.kontakt-content p {
+    margin: 5% 0;
+}
+
+.img-container {
+    background: blanchedalmond;
+    flex: 1;
+    min-width: 300px;
+    margin: 11% 6%;
+}
+
+.img-block {
+    width: 400px;
+    height: 400px;
+}
+
+.text-kommunikation {
+    flex-basis: 100%;
+    align-items: unset;
+    margin: 2% 6% 6% 6%
+}
+
+.kontakt a {
+    color: var(--link-text-color);
+    text-decoration: none;
+}
+
+.kontakt .fa {
+    font-size: 14px;
+}
+
+
+/*Settings*/
+.settings-page {
+    margin: 0 auto;
+    width: 80%;
+    background-color: var(--base-color);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.settings-content {
+    flex: 1;
+    margin: 5% 6% 0 6%;
+}
+
+.settings-content h6 {
+    margin: 0 0 -1% 0;
+}
 
 

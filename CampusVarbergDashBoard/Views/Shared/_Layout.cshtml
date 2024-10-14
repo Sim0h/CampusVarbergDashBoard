@@ -4,8 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CampusVarbergDashBoard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <link href="https://cdn.syncfusion.com/ej2/material.css" rel="stylesheet">
+    <script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Darkmode.css" />
     <link rel="stylesheet" href="~/CampusVarbergDashBoard.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.1.48/fluent.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -38,11 +44,11 @@
 
 
 @*                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
- *@                           @*  @await Component.InvokeAsync("GenderDistribution")
+                            @await Component.InvokeAsync("GenderDistribution")
                             @await Component.InvokeAsync("TotalApplicants")
-                            @await Component.InvokeAsync("Competence") *@
+                            @await Component.InvokeAsync("Competence")
 
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
 
 
                         </li>

@@ -31,6 +31,10 @@ namespace CampusVarbergDashBoard.Repository
 
         Task<IEnumerable<Applicant>> GetApplicantsLocAsync();
         Task UpdateApplicantCoordinatesAsync(Applicant applicant);
+        Task<IEnumerable<Applicant>> GetApplicantsWithoutCoordinatesAsync();
+        Task<IEnumerable<Applicant>> GetApplicantsWithoutAgeAsync();
+        Task UpdateApplicantAgeAsync(int applicantId, int age);
+
 
     }
 }
