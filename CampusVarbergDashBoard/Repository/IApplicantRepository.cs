@@ -5,9 +5,9 @@ namespace CampusVarbergDashBoard.Repository
 {
     public interface IApplicantRepository
     {
-
+        Task<IEnumerable<Applicant>> GetAllApplicantsAsync();
         Task<CompetenceDistribution> GetCompetenceDistributionAsync();
-        Task<StatusDistribution> GetStatusDistributionAsync();
+        Task<IEnumerable<StatusDistribution>> GetStatusDistributionAsync(int? year);
 
         //Define function that shows how many people applied for all educations
         Task<TotalApplicants> GetTotalApplicantsAsync();
