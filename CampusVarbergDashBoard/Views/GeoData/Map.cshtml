@@ -4,13 +4,16 @@
 
 <div class="dropdown-container">
     <div class="dropdown-item">
-        <input type="text" id="ortDropdown" name="ortDropdown" />
+        <label for="ortDropdown"></label>
+        <input type="text" id="ortDropdown" name="ortDropdown" aria-label="Ort" />
     </div>
     <div class="dropdown-item">
-        <input type="text" id="postnummerDropdown" name="postnummerDropdown" />
+        <label for="postnummerDropdown"></label>
+        <input type="text" id="postnummerDropdown" name="postnummerDropdown" aria-label="Postnummer" />
     </div>
     <div class="dropdown-item">
-        <input type="text" id="colorSchemeDropdown" name="colorSchemeDropdown" />
+        <label for="colorSchemeDropdown"></label>
+        <input type="text" id="colorSchemeDropdown" name="colorSchemeDropdown" aria-label="Färgtema" />
     </div>
     <div class="button-container">
         <button type="button" class="btn btn-primary" id="filter-btn">Filtrera</button>
@@ -21,7 +24,7 @@
     Antal sökande: <span id="antal-sokande">0</span>
 </div>
 
-<div id="map" style="height: 725px; width: 100%;"></div>
+<div id="map" style="height: 725px; width: 100%;" tabindex="0"></div>
 
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -81,7 +84,7 @@
 
         if (points.length > 0) {
             heatmapLayer = L.heatLayer(points, {
-                radius: 30,
+                radius: 20,
                 blur: 20,
                 maxZoom: 10,
                 gradient: gradient
@@ -208,7 +211,7 @@
             if (data && data.coordinates) {
                 jsonData = data.coordinates;
 
-                
+
                 jsonData.forEach(item => {
                     if (!isValidOrt(item.ort)) {
                         item.ort = 'Okänd Ort';
@@ -265,3 +268,20 @@
         updateApplicantCount(filteredData.reduce((acc, curr) => acc + curr.antalSokande, 0));
     });
 </script>
+
+<style>
+    input:focus, button:focus, .dropdown-container .dropdown-item input:focus {
+        outline: 2px solid #005fcc;
+        outline-offset: 2px;
+    }
+
+    
+    .btn-primary {
+        background-color: #FFD500; 
+        color: #000000; 
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #E6C200; 
+        }
+</style>
