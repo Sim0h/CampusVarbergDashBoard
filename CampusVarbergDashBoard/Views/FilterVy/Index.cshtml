@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CampusVarbergDashBoard.FilterData.YearDistribution>
+﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
 
 @{
 	var utbildning = new string[] { "Alla YH Utbildningar", "Digital analytiker", "Elkonstruktör, Varberg", "Energitekniker med specialisering vindkraft",
@@ -6,20 +6,14 @@
 	"Projektledare inriktning vindkraft", "Redovisningskonsult", "Rådgivare bank och placering", "Solenergiprojektör", "Systemutvecklare .NET",
 	"Vatten- och biogastekniker", "VVS-ingenjör - energi och teknik" };
 
-
-
 	var kön = new string[] { "Alla Kön", "Kvinna", "Man" };
 
-
-
 	var år = new string[] { "Alla år", "2024", "2023", "2022", "2021", "2020" };
-
-
 
 	var termin = new string[] { "Alla terminer", "Vårtermin", "Hösttermin" };
 }
 
-<form method="post">
+<form method="get">
 	<div class="dropdown-container">
 		<div class="dropdown-item">
 			<ejs-dropdownlist id="utbildning" name="utbildning" dataSource="utbildning" popupWidth="220px" placeholder="Välj utbildning" popupHeight="220px"></ejs-dropdownlist>
@@ -46,38 +40,19 @@
 <div class="card">
 	<div class="card-body">
 		<h5 class="card-title">Resultat</h5>
-		<ul>
-			@if (Context.Request.HasFormContentType)
+		
+			@if (Model != null)
 			{
-
-				var selectedUtbildning = Context.Request.Form["utbildning"].ToString();
-
-				var selectedKön = Context.Request.Form["kön"].ToString();
-
-				var selectedÅr = Context.Request.Form["år"].ToString();
-
-				var selectedTermin = Context.Request.Form["termin"].ToString();
-
-				@await Component.InvokeAsync("YearDistribution", new
-
-					{
-
-						utbildning = selectedUtbildning,
-
-						kön = selectedKön,
-
-						år = selectedÅr,
-
-						termin = selectedTermin
-
-					})
-
+				<p>Model is not null</p>
+				@await Html.PartialAsync("_CompetenceFilterData", Model)
+				@await Html.PartialAsync("_GenderFilterData", Model)
+				@await Html.PartialAsync("_AgeFilterData", Model)
 			}
 			else
 			{
-				<li>Vänligen välj filter och tryck på "Sök".</li>
+				<p>No data available</p>
 			}
-		</ul>
+		
 	</div>
 </div>
 
