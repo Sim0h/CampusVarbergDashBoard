@@ -1,0 +1,69 @@
+﻿@model IEnumerable<StatusDistribution>
+
+@{
+    var registreradDataSource = Model.Where(m => m.Registrerad != null)
+                                     .OrderBy(m => m.Registrerad)
+                                     .Select(m => new { x = m.Registrerad, y = m.RegistreradCount })
+                                     .ToList();
+
+    var inlamnadDataSource = Model.Where(m => m.Inlämnad != null)
+                                  .OrderBy(m => m.Inlämnad)
+                                  .Select(m => new { x = m.Inlämnad, y = m.InlämnadCount })
+                                  .ToList();
+
+    var erbjudenPlatsDataSource = Model.Where(m => m.Erbjuden_Plats_Datum != null)
+                                        .OrderBy(m => m.Erbjuden_Plats_Datum)
+                                       .Select(m => new { x = m.Erbjuden_Plats_Datum, y = m.Erbjuden_Plats_DatumCount })
+                                       .ToList();
+
+    ViewBag.RegistreradDataSource = registreradDataSource;
+    ViewBag.InlamnadDataSource = inlamnadDataSource;
+    ViewBag.ErbjudenPlatsDataSource = erbjudenPlatsDataSource;
+}
+
+<div>
+    <label for="yearFilter">Filtrera per år:</label>
+    <select id="yearFilter" onchange="filterByYear()">
+        <option value="">Alla år</option>
+        @for (var year = DateTime.Now.Year; year >= 2016; year--)
+        {
+            <option value="@year">@year</option>
+        }
+    </select>
+</div>
+
+<ejs-chart id="container" title="Ansökande Process Tidslinje" width="80%">
+    <e-chart-primaryxaxis valueType="DateTime" labelFormat="yyyy-MM-dd" intervalType="Months" interval="1">
+    </e-chart-primaryxaxis>
+    <e-chart-tooltipsettings enable="true"></e-chart-tooltipsettings>
+    
+    <e-series-collection>
+        <e-series dataSource="ViewBag.RegistreradDataSource" xName="x" yName="y" name="Registrerad"
+                  type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line" marker-visible="true" marker-datalabel-visible="true">
+        </e-series>
+
+        <e-series dataSource="ViewBag.InlamnadDataSource" xName="x" yName="y" name="Inlämnad"
+                  type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line" marker-visible="true" marker-datalabel-visible="true">
+        </e-series>
+
+        <e-series dataSource="ViewBag.ErbjudenPlatsDataSource" xName="x" yName="y" name="Erbjuden plats"
+                  type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line" marker-visible="true" marker-datalabel-visible="true">
+        </e-series>
+    </e-series-collection>
+</ejs-chart>
+
+<script>
+    function filterByYear() {
+        var year = document.getElementById('yearFilter').value;
+
+        if (year) { // Skicka bara om ett år är valt
+            window.location.href = '@Url.Action("Index", "Status")?year=' + year;
+        } else {
+            window.location.href = '@Url.Action("Index", "Status")';
+        }
+    }
+</script>
+
+
+
+
