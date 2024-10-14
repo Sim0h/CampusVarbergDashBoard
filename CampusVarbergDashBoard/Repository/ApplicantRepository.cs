@@ -117,8 +117,7 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-        public async Task<StatusDistribution> GetStatusDistributionAsync()
-
+        public async Task<IEnumerable<StatusDistribution>> GetStatusDistributionAsync(int? year)
         {
             using (var connection = GetConnection())
             {
