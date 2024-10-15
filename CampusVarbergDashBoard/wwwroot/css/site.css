@@ -12,7 +12,8 @@
     Dark blue darkmode
     --base-color: #101425;
     --background-color: #070b1d;*/
-/*  Dark grey dark mode  */
+
+/*  Dark grey darkmode  */
     --base-color: #2a2a2a;
     --background-color: #1a1a1a;
 
@@ -66,10 +67,25 @@ body {
     margin-left: 10%;
 }*/
 
-.navbar {
+.navbar-site {
     background-color: #f6bf45 !Important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    position: relative;
+    width: 100%;
+    z-index: 999;
+}
+
+/* Dold navbar */
+.navbar-hidden {
+    display: none; 
+    background-color: #f6bf45 !Important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    position: fixed;
+    top: 0px; 
+    width: 100%; 
+    z-index: 10000; 
 }
 
 .nav-button:hover {
@@ -78,20 +94,21 @@ body {
 }
 
 .nav-item.separator {
-    position: relative; /* Gör det möjligt att placera pseudo-elementet */
+    position: relative;
     margin-left:8%;
-    padding-left: 8%; /* Utrymme till vänster om innehållet */
+    padding-left: 8%;
 }
 
 .nav-item.separator::before {
     content: ""; /* Skapa ett tomt innehåll för linjen */
-    position: absolute; /* Positionera den absolut */
-    left: -8%; /* Utrymme till vänster */
-    top: 50%; /* Centrera den vertikalt */
-    transform: translateY(-50%); /* Justera för att centrerade linjen vertikalt */
-    height: 70%; /* Sätt höjden på linjen */
-    border-left: 1px solid black; /* Linjens stil */
+    position: absolute; 
+    left: -8%;
+    top: 50%; 
+    transform: translateY(-50%); 
+    height: 70%; 
+    border-left: 1px solid black; 
 }
+
 
 
 .overview-container {
