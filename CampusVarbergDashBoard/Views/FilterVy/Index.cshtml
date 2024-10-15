@@ -16,19 +16,19 @@
 <form method="get">
 	<div class="dropdown-container">
 		<div class="dropdown-item">
-			<ejs-dropdownlist id="utbildning" name="utbildning" dataSource="utbildning" popupWidth="220px" placeholder="Välj utbildning" popupHeight="220px"></ejs-dropdownlist>
+			<ejs-dropdownlist id="utbildning" name="utbildning" dataSource="utbildning" popupWidth="220px" placeholder="Välj utbildning" popupHeight="220px" value="@Model.SelectedUtbildning"></ejs-dropdownlist>
 		</div>
 
 		<div class="dropdown-item">
-			<ejs-dropdownlist id="kön" name="kön" dataSource="kön" popupWidth="220px" placeholder="Välj Kön" popupHeight="220px"></ejs-dropdownlist>
+			<ejs-dropdownlist id="kön" name="kön" dataSource="kön" popupWidth="220px" placeholder="Välj Kön" popupHeight="220px" value="@Model.SelectedKön"></ejs-dropdownlist>
 		</div>
 
 		<div class="dropdown-item">
-			<ejs-dropdownlist id="år" name="år" dataSource="år" popupWidth="220px" placeholder="Välj År" popupHeight="220px"></ejs-dropdownlist>
+			<ejs-dropdownlist id="år" name="år" dataSource="år" popupWidth="220px" placeholder="Välj År" popupHeight="220px" value="@Model.SelectedÅr"></ejs-dropdownlist>
 		</div>
 
 		<div class="dropdown-item">
-			<ejs-dropdownlist id="termin" name="termin" dataSource="termin" popupWidth="220px" placeholder="Välj Termin" popupHeight="220px"></ejs-dropdownlist>
+			<ejs-dropdownlist id="termin" name="termin" dataSource="termin" popupWidth="220px" placeholder="Välj Termin" popupHeight="220px" value="@Model.SelectedTermin"></ejs-dropdownlist>
 		</div>
 
 		<div class="button-container">
@@ -37,22 +37,81 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-body">
-		<h5 class="card-title">Resultat</h5>
-		
-			@if (Model != null)
-			{
-				<p>Model is not null</p>
-				@await Html.PartialAsync("_CompetenceFilterData", Model)
-				@await Html.PartialAsync("_GenderFilterData", Model)
-				@await Html.PartialAsync("_AgeFilterData", Model)
-			}
-			else
-			{
-				<p>No data available</p>
-			}
-		
+<div class="container">
+	<div class="row mb-4">
+		<!-- First 3 cards -->
+		<div class="col-md-4 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Antal Sökande</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_NumberOfApplicantsFilterData", Model)
+					}
+					else
+					{
+						<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Könsfördelning</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_GenderFilterData", Model)
+					}
+					else
+					{
+						<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Behörighet till sökt utbildning</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_CompetenceFilterData", Model)
+					}
+					else
+					{
+						<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Fourth card below the first three -->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Åldersfördelning</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_AgeFilterData", Model)
+					}
+					else
+					{
+						<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -115,7 +174,7 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-		background-color:
+		
 	}
 
 	.applicant-list {
@@ -124,10 +183,61 @@
 
 	.card {
 		margin-bottom: 10px;
+		border: 2px solid #ccc; /* Add a border */
+		border-radius: 8px; /* Add rounded corners */
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		height: 100%; /* Make sure the card height expands properly */
+	}
+
+	.card-body {
+		padding: 20px;
+		display: flex;
+		justify-content: center; /* Center horizontally */
+		align-items: center; /* Center vertically */
+		flex-direction: column; /* Ensure content is stacked vertically */
+		text-align: center; /* Align text in the center */
 	}
 
 	.pie-chart-container {
 		margin-top: 20px;
 		text-align: center;
+	}
+
+	.widget-chart {
+		background-color: #f9f9f9;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		min-height: 200px; /* Ensure cards have a uniform height */
+		display: flex;
+		justify-content: center; /* Center horizontally */
+		align-items: center; /* Center vertically */
+		text-align: center; /* Center text inside */
+	}
+
+	.card-content p {
+		margin: 0;
+		font-size: 18px; /* Adjust text size */
+		color: var(--text-color);
+	}
+
+	/* Container spacing */
+	.container {
+		margin-top: 20px;
+	}
+
+	.card-body p {
+		text-align: center;
+		width: 100%;
+	}
+
+	/* Style for empty data message */
+	p {
+		
+		font-size: 16px;
 	}
 </style>

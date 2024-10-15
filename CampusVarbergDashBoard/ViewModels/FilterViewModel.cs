@@ -1,4 +1,5 @@
 ﻿using CampusVarbergDashBoard.FilterData;
+using CampusVarbergDashBoard.Models;
 
 namespace CampusVarbergDashBoard.ViewModels
 {
@@ -8,6 +9,12 @@ namespace CampusVarbergDashBoard.ViewModels
         public GenderDistribution GenderDistribution { get; set; }
         public CompetenceDistribution CompetenceDistribution { get; set; }
         public IEnumerable<AgeDistribution> AgeDistribution { get; set; }
+		public List<Applicant> Applicants { get; set; }
+
+		public string SelectedUtbildning { get; set; }
+		public string SelectedKön { get; set; }
+		public string SelectedÅr { get; set; }
+		public string SelectedTermin { get; set; }
 
 	}
 }

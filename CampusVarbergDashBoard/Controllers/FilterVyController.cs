@@ -35,6 +35,11 @@ namespace CampusVarbergDashBoard.Controllers
 				GenderDistribution = GetGenderDistribution(filteredApplicants),
 				CompetenceDistribution = GetCompetenceDistribution(filteredApplicants),
 				AgeDistribution = await GetAgeFilterDistributionAsync(filteredApplicants),
+				Applicants = filteredApplicants.ToList(),
+				SelectedUtbildning = utbildning,
+				SelectedKön = kön,
+				SelectedÅr = år,
+				SelectedTermin = termin
 
 			};
 
@@ -48,25 +53,26 @@ namespace CampusVarbergDashBoard.Controllers
 			if (!string.IsNullOrEmpty(utbildning) && utbildning != "Alla YH Utbildningar")
 			{
 				applicants = ApplyEducationFilter(applicants, utbildning);
-				Console.WriteLine($"After Education Filter: {applicants.Count()} applicants");
+				
+
 			}
 
 			if (!string.IsNullOrEmpty(kön) && kön != "Alla Kön")
 			{
 				applicants = ApplyGenderFilter(applicants, kön);
-				Console.WriteLine($"After Gender Filter: {applicants.Count()} applicants");
+				
 			}
 
 			if (!string.IsNullOrEmpty(år) && år != "Alla år")
 			{
 				applicants = ApplyYearFilter(applicants, år, int.Parse(år), int.Parse(år));
-				Console.WriteLine($"After Year Filter: {applicants.Count()} applicants");
+				
 			}
 
 			if (!string.IsNullOrEmpty(termin) && termin != "Alla terminer")
 			{
 				applicants = await ApplyTermFilter(applicants, termin);
-				Console.WriteLine($"After Term Filter: {applicants.Count()} applicants");
+				
 			}
 
 			return applicants;
@@ -208,7 +214,6 @@ namespace CampusVarbergDashBoard.Controllers
 			return applicants;
 		}
 
-				
 
 		private SqlConnection GetConnection()
 		{
