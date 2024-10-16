@@ -98,48 +98,22 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-        // Hämtar könsfördelning för en specifik utbildning
-
-        public async Task<GenderDistribution> GetGenderDistributionByEducationAsync(string education, string term)
+        
+        public async Task<IEnumerable<StatusDistribution>> GetStatusDistributionAsync()
         {
             using (var connection = GetConnection())
             {
                 string query = @"
+                            SELECT
+                                COUNT(CASE WHEN Inlämnad IS NOT NULL THEN 1 ELSE NULL END) AS InlämnadCount,
+                                COUNT(CASE WHEN Behörig = 'Ja' THEN 1 ELSE NULL END) AS BehörigCount,
+                                COUNT(CASE WHEN Status = 'Erbjuden plats (Inskriven)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount,
+                                COUNT(CASE WHEN Status = 'Erbjuden plats (Tackat ja)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount
+                            FROM dbo.ExcelData";
+                           
 
-                    SELECT
-                        SUM(CASE WHEN Kön = 'Man' THEN 1 ELSE 0 END) AS MaleCount,
-                        SUM(CASE WHEN Kön = 'Kvinna' THEN 1 ELSE 0 END) AS FemaleCount
-                    FROM dbo.ExcelData
-                    WHERE Utbildning = @Education AND Termin = @Term";
-
-                return await connection.QueryFirstOrDefaultAsync<GenderDistribution>(
-                    query, new { Education = education, Term = term });
-            }
-        }
-
-        public async Task<IEnumerable<StatusDistribution>> GetStatusDistributionAsync(int? year)
-        {
-            using (var connection = GetConnection())
-            {
-                string query = @"
-
-                         SELECT
-                            CAST(Registrerad AS DATE) AS Registrerad,
-                            COUNT(CASE WHEN Registrerad IS NOT NULL THEN 1 ELSE NULL END) AS RegistreradCount,
-                            CAST(Inlämnad AS DATE) AS Inlämnad,
-                            COUNT(CASE WHEN Inlämnad IS NOT NULL THEN 1 ELSE NULL END) AS InlämnadCount,
-                            CAST(Erbjuden_plats_datum AS DATE) AS Erbjuden_Plats_Datum,
-                            COUNT(CASE WHEN Erbjuden_plats_datum IS NOT NULL THEN 1 ELSE NULL END) AS Erbjuden_Plats_DatumCount,
-                            YEAR(Registrerad) AS Year
-                        FROM dbo.ExcelData
-                        WHERE (@year IS NULL OR YEAR(Registrerad) = @year OR YEAR(Inlämnad) = @year OR YEAR(Erbjuden_plats_datum) = @year)
-                        GROUP BY
-                            CAST(Registrerad AS DATE),
-                            CAST(Inlämnad AS DATE),
-                            CAST(Erbjuden_plats_datum AS DATE),
-                            YEAR(Registrerad)";
-
-                var result = await connection.QueryAsync<StatusDistribution>(query, new { year });
+                var result = await connection.QueryAsync<StatusDistribution>(query);
+                Console.WriteLine($"Retrieved {result.Count()} Status distributions");
                 return result;
             }
         }
@@ -192,25 +166,6 @@ namespace CampusVarbergDashBoard.Repository
                     Longitud = applicant.Longitud,
                     ID = applicant.ID
                 });
-            }
-        }
-
-
-        public async Task<IEnumerable<Applicant>> GetMenAsync()
-        {
-            using (var connection = GetConnection())
-            {
-                string query = "SELECT * FROM dbo.ExcelData WHERE Kön = 'Man'";
-                return await connection.QueryAsync<Applicant>(query);
-            }
-        }
-
-        public async Task<IEnumerable<Applicant>> GetWomenAsync()
-        {
-            using (var connection = GetConnection())
-            {
-                string query = "SELECT * FROM dbo.ExcelData WHERE Kön = 'Kvinna'";
-                return await connection.QueryAsync<Applicant>(query);
             }
         }
 
@@ -301,6 +256,28 @@ namespace CampusVarbergDashBoard.Repository
             {
                 string query = "SELECT * FROM dbo.ExcelData";
                 return connection.QueryAsync<Applicant>(query);
+            }
+        }
+
+        public async Task<TotalApplicants> GetApplicantsOfferedPlaceAsync(int? year, string education, string gender, string term)
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                SELECT COUNT (*)
+                FROM dbo.ExcelData
+                WHERE Erbjuden_plats_datum IS NOT NULL
+                  AND (@year IS NULL OR YEAR(Registrerad) = @year OR YEAR(Inlämnad) = @year OR YEAR(Erbjuden_plats_datum) = @year)
+                  AND (@education IS NULL OR Utbildning = @education)
+                  AND (@gender IS NULL OR Kön = @gender)
+                  AND (@term IS NULL or Termin = @term)";
+
+                int count = await connection.ExecuteScalarAsync<int>(query, new { year, education, gender, term });
+
+                return new TotalApplicants
+                {
+                    TotalApplicantsCount = count
+                };
             }
         }
     }
