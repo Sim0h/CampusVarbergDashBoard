@@ -31,7 +31,6 @@ namespace CampusVarbergDashBoard.Controllers
             return View();
         }
 
-
     }
 
     public class StatusChartData
