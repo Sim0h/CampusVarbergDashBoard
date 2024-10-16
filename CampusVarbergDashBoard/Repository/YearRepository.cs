@@ -23,7 +23,7 @@ namespace CampusVarbergDashBoard.Repository
                 string query = @"
                         SELECT Inlämnad AS Year
                         FROM dbo.ExcelData
-                        WHERE YEAR(Inlämnad) = @Year
+                        WHERE YEAR(Inlämnad) = @Year AND Inlämnad IS NOT NULL
                         ORDER BY Inlämnad DESC";
 
                 return await connection.QueryAsync<YearDistribution>(query, new { Year = year });
@@ -55,7 +55,7 @@ namespace CampusVarbergDashBoard.Repository
                 string query = @"
                 SELECT CONVERT(varchar, Inlämnad, 23) AS Termin
                 FROM dbo.ExcelData
-                WHERE Inlämnad BETWEEN @StartDate AND @EndDate";
+                WHERE Inlämnad IS NOT NULL AND Inlämnad BETWEEN @StartDate AND @EndDate";
 
                 var result = await connection.QueryAsync<string>(query, new { StartDate = startDate, EndDate = endDate });
               
@@ -78,17 +78,8 @@ namespace CampusVarbergDashBoard.Repository
             {
                 string query = "SELECT * FROM dbo.ExcelData";
                 var applicants = await connection.QueryAsync<Applicant>(query);
-                Console.WriteLine($"Retrieved {applicants.Count()} applicants.");
                 return applicants;
             }
-        }
-
-		
-
-
-		public Task<IEnumerable<string>> GetSpecificYearAsync(string year)
-        {
-            throw new NotImplementedException();
         }
 
         private SqlConnection GetConnection()

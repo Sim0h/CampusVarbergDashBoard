@@ -35,11 +35,17 @@ namespace CampusVarbergDashBoard.Controllers
 				GenderDistribution = GetGenderDistribution(filteredApplicants),
 				CompetenceDistribution = GetCompetenceDistribution(filteredApplicants),
 				AgeDistribution = await GetAgeFilterDistributionAsync(filteredApplicants),
+				OfferedSpotDistribution = GetOfferedSpotDistribution(filteredApplicants),
+				LateApplicationDistribution = GetLateApplicationDistribution(filteredApplicants),
 				Applicants = filteredApplicants.ToList(),
+				AcceptedOfferDistribution = GetAcceptedOfferDistribution(filteredApplicants),
+
+
 				SelectedUtbildning = utbildning,
 				SelectedKön = kön,
 				SelectedÅr = år,
 				SelectedTermin = termin
+
 
 			};
 
@@ -50,29 +56,33 @@ namespace CampusVarbergDashBoard.Controllers
 		{
 			var applicants = await _yearRepository.GetApplicantsAsync();
 
+			applicants = OfferedSpotFilter(applicants);
+
+			applicants = AcceptedApplication(applicants);
+
 			if (!string.IsNullOrEmpty(utbildning) && utbildning != "Alla YH Utbildningar")
 			{
 				applicants = ApplyEducationFilter(applicants, utbildning);
-				
+
 
 			}
 
 			if (!string.IsNullOrEmpty(kön) && kön != "Alla Kön")
 			{
 				applicants = ApplyGenderFilter(applicants, kön);
-				
+
 			}
 
 			if (!string.IsNullOrEmpty(år) && år != "Alla år")
 			{
 				applicants = ApplyYearFilter(applicants, år, int.Parse(år), int.Parse(år));
-				
+
 			}
 
 			if (!string.IsNullOrEmpty(termin) && termin != "Alla terminer")
 			{
 				applicants = await ApplyTermFilter(applicants, termin);
-				
+
 			}
 
 			return applicants;
@@ -87,6 +97,25 @@ namespace CampusVarbergDashBoard.Controllers
 				Kön = a.Kön,
 				Termin = a.Inlämnad
 			});
+		}
+
+		private LateApplicationDistribution GetLateApplicationDistribution(IEnumerable<Applicant> applicants)
+		{
+			return new LateApplicationDistribution
+			{
+				LateApplicationCount = applicants.Count(a => a.Sen_anmälan == "Ja"),
+				NotLateApplicationCount = applicants.Count(a => a.Sen_anmälan == "Nej")
+			};
+		}
+
+		private OfferedSpotDistribution GetOfferedSpotDistribution(IEnumerable<Applicant> applicants)
+		{
+			return new OfferedSpotDistribution
+			{
+				OfferedSpotCount = applicants.Count(a => a.ErbjudenPlats == "Erbjuden plats"),
+				ReserveCount = applicants.Count(a => a.ErbjudenPlats == "Reserv"),
+				NotOfferedSpotCount = applicants.Count(a => a.ErbjudenPlats == "Ej erbjuden plats")
+			};
 		}
 
 		private GenderDistribution GetGenderDistribution(IEnumerable<Applicant> applicants)
@@ -104,6 +133,81 @@ namespace CampusVarbergDashBoard.Controllers
 			{
 				CompetenceCount = applicants.Count(a => a.Behörig == "Ja"),
 				NonCompetenceCount = applicants.Count(a => a.Behörig == "Nej")
+			};
+		}
+
+		private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants)
+		{
+
+			return applicants.Select(a =>
+			{
+				if (a.Status != null && a.Status.Contains("Erbjuden plats", StringComparison.OrdinalIgnoreCase))
+				{
+					a.ErbjudenPlats = "Erbjuden plats";
+				}
+				else if (a.Status != null && (
+				a.Status.Contains("Tackat ja", StringComparison.OrdinalIgnoreCase) ||
+				a.Status.Contains("inskriven", StringComparison.OrdinalIgnoreCase)))
+				{
+					a.ErbjudenPlats = "Erbjuden plats";
+				}
+				else if (a.Status != null && a.Status.Contains("Reserv"))
+				{
+					a.ErbjudenPlats = "Reserv";
+				}
+				else
+				{
+					a.ErbjudenPlats = "Ej erbjuden plats";
+				}
+				return a;
+			});
+		}
+
+		private IEnumerable<Applicant> LateApplicantion(IEnumerable<Applicant> applicants)
+		{
+			return applicants.Select(a =>
+			{
+				if (a.Sen_anmälan != null && a.Sen_anmälan.Contains("Ja", StringComparison.OrdinalIgnoreCase))
+				{
+					a.Sen_anmälan = "Ja";
+				}
+				else if (a.Sen_anmälan != null && a.Sen_anmälan.Contains("Nej", StringComparison.OrdinalIgnoreCase))
+				{
+					a.Sen_anmälan = "Nej";
+				}
+				return a;
+			});
+		}
+
+		private IEnumerable<Applicant> AcceptedApplication(IEnumerable<Applicant> applicants)
+		{
+			return applicants.Select(a =>
+			{
+				if (a.Status != null &&
+				a.Status.Contains(("Tackat ja"), StringComparison.OrdinalIgnoreCase))
+				{
+					a.Status = "Tackat Ja";
+				}
+				else if (a.Status != null &&
+				a.Status.Contains(("inskriven"), StringComparison.OrdinalIgnoreCase))
+				{
+					a.Status = "Tackat Ja";
+				}
+				else if (a.Status != null && a.Status.Contains("Tackat Nej", StringComparison.OrdinalIgnoreCase))
+				{
+					a.Status = "Tackat Nej";
+				}
+
+				return a;
+			});
+		}
+
+		private AcceptedOfferDistribution GetAcceptedOfferDistribution(IEnumerable<Applicant> applicants)
+		{
+			return new AcceptedOfferDistribution
+			{
+				AcceptedOfferCount = applicants.Count(a => a.Status == "Tackat Ja"),
+				DeclinedOfferCount = applicants.Count(a => a.Status == "Tackat Nej")
 			};
 		}
 
@@ -133,8 +237,22 @@ namespace CampusVarbergDashBoard.Controllers
 		{
 			if (!string.IsNullOrEmpty(utbildning) && utbildning != "Alla YH Utbildningar")
 			{
-				return applicants.Where(a => a.Utbildning.Contains(utbildning, StringComparison.OrdinalIgnoreCase));
+				var educationNameMapping = GetEducationNameMapping();
+
+				if (educationNameMapping.ContainsKey(utbildning))
+				{
+					var relatedNames = educationNameMapping[utbildning];
+
+					return applicants.Where(a =>
+						relatedNames.Any(oldName => a.Utbildning.Contains(oldName, StringComparison.OrdinalIgnoreCase)) ||
+						a.Utbildning.Contains(utbildning, StringComparison.OrdinalIgnoreCase));
+				}
+				else
+				{
+					return applicants.Where(a => a.Utbildning.Contains(utbildning, StringComparison.OrdinalIgnoreCase));
+				}
 			}
+
 			return applicants;
 		}
 
@@ -219,6 +337,19 @@ namespace CampusVarbergDashBoard.Controllers
 		{
 			return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 		}
+
+		private Dictionary<string, List<string>> GetEducationNameMapping()
+		{
+			return new Dictionary<string, List<string>>
+			{
+				{ "Medicinsk vårdadministratör", new List<string> { "Medicinsk Sekreterare", "Medicinsk Sekreterare / koordinator" } },
+				{ "Digital analytiker", new List<string>() },
+				{ "Elkonstruktör", new List<string>(){"Elingenjör/Elkonstruktör" } },
+
+
+			};
+		}
+
 
 	}
 }

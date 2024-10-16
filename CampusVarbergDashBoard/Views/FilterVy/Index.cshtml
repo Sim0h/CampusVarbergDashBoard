@@ -1,7 +1,7 @@
 ﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
 
 @{
-	var utbildning = new string[] { "Alla YH Utbildningar", "Digital analytiker", "Elkonstruktör, Varberg", "Energitekniker med specialisering vindkraft",
+	var utbildning = new string[] { "Alla YH Utbildningar", "Digital analytiker", "Elkonstruktör", "Energitekniker med specialisering vindkraft",
 	"IT-projektledare", "Järnvägsprojektör", "Laborant", "Logistiker", "Medicinsk vårdadministratör", "Processtekniker - hållbar produktion",
 	"Projektledare inriktning vindkraft", "Redovisningskonsult", "Rådgivare bank och placering", "Solenergiprojektör", "Systemutvecklare .NET",
 	"Vatten- och biogastekniker", "VVS-ingenjör - energi och teknik" };
@@ -78,7 +78,24 @@
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
-						<h5>Behörighet till sökt utbildning</h5>
+						<h5>Status Ansökta</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_AcceptanceFilterData", Model)
+					}
+					else
+					{
+						<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Behörighet</h5>
 					</div>
 					@if (Model != null)
 					{
@@ -91,6 +108,40 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-md-4 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Sen Anmälan</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_LateApplicationFilterData", Model)
+					}
+					else
+					{
+						<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="title">
+						<h5>Erbjudna Plats</h5>
+					</div>
+					@if (Model != null)
+					{
+						@await Html.PartialAsync("_AcceptedOfferFilterData", Model)
+					}
+					else
+					{
+							<p>No data available</p>
+					}
+				</div>
+			</div>
+		</div> 
 	</div>
 
 	<!-- Fourth card below the first three -->

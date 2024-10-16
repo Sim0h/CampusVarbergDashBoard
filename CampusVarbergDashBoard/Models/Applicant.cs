@@ -17,7 +17,7 @@ namespace CampusVarbergDashBoard.Models
         public DateTime Registrerad { get; set; }
         public DateTime Inlämnad { get; set; }
         public string Behörig { get; set; }
-        public string SenAnmälan { get; set; }
+        public string Sen_anmälan { get; set; }
         public string Status { get; set; }
         public string ErbjudenPlats { get; set; }
         public string Urval { get; set; }
