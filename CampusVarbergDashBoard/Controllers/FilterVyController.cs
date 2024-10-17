@@ -340,10 +340,13 @@ namespace CampusVarbergDashBoard.Controllers
 				{ "Medicinsk vårdadministratör", new List<string> { "Medicinsk Sekreterare", "Medicinsk Sekreterare / koordinator" } },
 				{ "Digital analytiker", new List<string>() },
 				{ "Elkonstruktör", new List<string>(){"Elingenjör/Elkonstruktör" } },
-
+				{ "Vatten- och biogastekniker", new List<string>(){ "Drifttekniker - biogas och vattenrening", "Drifttekniker biogas och vattenrening, Varberg" } },
+				{ "VVS-ingenjör - energi och teknik", new List<string>(){ "VVS-ingenjör, Varberg" } },
 
 			};
 		}
-	}
-}
 
+
+	}
+
+}
