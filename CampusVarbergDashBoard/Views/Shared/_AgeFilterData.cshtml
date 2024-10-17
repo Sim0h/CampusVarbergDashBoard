@@ -24,11 +24,12 @@
 @if (Model?.AgeDistribution != null)
 
 {
-    <ejs-chart id="ageDistributionChart">
+    <ejs-chart id="ageDistributionChart" width="90%" height="90%" enableAutoResize="true">
         <e-chart-primaryxaxis valueType="Category"></e-chart-primaryxaxis>
         <e-chart-primaryyaxis></e-chart-primaryyaxis>
         <e-series-collection>
-            <e-series dataSource="ViewBag.dataSource" xName="AgeRange" yName="Count" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Column">
+            <e-series dataSource="ViewBag.dataSource" xName="AgeRange" yName="Count" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line">
+                <e-series-marker visible="true" width="10" height="10"></e-series-marker>
             </e-series>
         </e-series-collection>
         <e-chart-tooltipsettings enable="true"></e-chart-tooltipsettings>
@@ -54,14 +55,26 @@
                     dataSource: @Html.Raw(Json.Serialize(ViewBag.dataSource)),
                     xName: 'AgeRange',
                     yName: 'Count',
-                    type: 'Column'
+                    type: 'Line',
+                    marker: {
+                        visible: true,
+                        width: 10,
+                        height: 10
+                    }
                 }],
                 // Tooltip for the chart
                 tooltip: {
                     enable: true
-                }
+                },
+                // Enable automatic resizing
+                enableAutoResize: true
             });
             chart.appendTo('#ageDistributionChart');
+
+            // Refresh chart on window resize
+            window.addEventListener('resize', function () {
+                chart.refresh();
+            });
         });
     </script>
     }

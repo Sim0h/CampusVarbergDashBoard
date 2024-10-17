@@ -1,0 +1,29 @@
+﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
+
+@{
+    var lateApplicationDistribution = Model?.LateApplicationDistribution;
+    var lateApplicationData = new List<object>();
+
+    if (lateApplicationDistribution != null)
+    {
+        lateApplicationData.Add(new { xValue = "Sen Anmälan", yValue = lateApplicationDistribution.LateApplicationCount, fill = "RGB(255, 99, 132)" });
+        lateApplicationData.Add(new { xValue = "Ej sen Anmälan", yValue = lateApplicationDistribution.NotLateApplicationCount, fill = "RGB(54, 162, 235)" });
+    }
+}
+
+@if (lateApplicationDistribution != null)
+{
+    <ejs-accumulationchart id="lateApplication" width="70%" height="70%">
+        <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
+        </e-accumulationchart-legendsettings>
+        <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+        <e-accumulation-series-collection>
+            <e-accumulation-series dataSource="lateApplicationData" xName="xValue" yName="yValue" innerRadius="40%" pointColorMapping="fill">
+            </e-accumulation-series>
+        </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+}
+else
+{
+    <p>Late application data is not available.</p>
+}

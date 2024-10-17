@@ -1,0 +1,30 @@
+﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
+
+@{
+    var offeredSpotDistribution = Model?.OfferedSpotDistribution;
+    var offeredSpotData = new List<object>();
+
+    if (offeredSpotDistribution != null)
+    {
+        offeredSpotData.Add(new { xValue = "Erbjuden Plats", yValue = offeredSpotDistribution.OfferedSpotCount, fill = "RGB(205, 51, 117)" });
+        offeredSpotData.Add(new { xValue = "Reserv", yValue = offeredSpotDistribution.ReserveCount, fill = "RGB(0, 131, 145)" });
+        offeredSpotData.Add(new { xValue = "Ej erbjuden plats", yValue = offeredSpotDistribution.NotOfferedSpotCount, fill = "RGB(255, 165, 0)" });
+    }
+}
+
+@if (offeredSpotDistribution != null)
+{
+    <ejs-accumulationchart id="offeredSpot" width="70%" height="70%">
+        <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
+        </e-accumulationchart-legendsettings>
+        <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+        <e-accumulation-series-collection>
+            <e-accumulation-series dataSource="offeredSpotData" xName="xValue" yName="yValue" innerRadius="40%" pointColorMapping="fill">
+            </e-accumulation-series>
+        </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+}
+else
+{
+    <p>Erbjuden plats data is not available.</p>
+}
