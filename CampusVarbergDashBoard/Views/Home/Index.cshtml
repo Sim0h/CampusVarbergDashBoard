@@ -5,6 +5,17 @@
     spacingModel modelValue = new spacingModel();
     modelValue.cellSpacing = new double[] { 10, 10 };
 }
+@{
+    var viewData = new ViewDataDictionary(ViewData)
+    {
+        { "MapId", "heatmap-overview" },
+        { "MapHeight", "400px" }
+    };
+}
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
 <div class="container">
     <div class="overview-container">
@@ -32,7 +43,7 @@
                                 </div>
                             </e-content-template>
                         </e-dashboardlayout-panel>
-
+                        
                         <!--Panel 2 Donut-->
                         <e-dashboardlayout-panel id="Panel2" sizeX="2" sizeY="2" row="0" col="2">
                             <e-content-template>
@@ -50,7 +61,7 @@
                                 </div>
                             </e-content-template>
                         </e-dashboardlayout-panel>
-
+                        
                         <!--Panel 3 Donut-->
                         <e-dashboardlayout-panel id="Panel3" sizeX="2" sizeY="2" row="2" col="0">
                             <e-content-template>
@@ -105,8 +116,22 @@
                             </e-content-template>
                         </e-dashboardlayout-panel>
 
-                        <!--Panel 6 Kartvy-->
-                        <e-dashboardlayout-panel id="Panel6" sizeX="2" sizeY="4" row="2" col="4" content="<div>6</div>">
+                        <!--Panel 6 kart-vy-->
+                        <e-dashboardlayout-panel id="Panel6" sizeX="2" sizeY="2" row="0" col="4">
+                            <e-content-template>
+                                <div>
+                                    <div class="e-panel-container">
+                                        <div class="e-panel-header">
+                                            <div>
+                                                Karta Översikt
+                                            </div>
+                                        </div>
+                                        <div class="e-panel-content">
+                                            @Html.Partial("_HeatmapPartial", null, viewData)
+                                        </div>
+                                    </div>
+                                </div>
+                            </e-content-template>
                         </e-dashboardlayout-panel>
 
                         <!--Panel 7 Stapel/hockeyklubba-->
@@ -129,6 +154,5 @@
                 </ejs-dashboardlayout>
                 <!-- end of dashboardlayout element -->
             </div>
-        </div>
     </div>
 </div>

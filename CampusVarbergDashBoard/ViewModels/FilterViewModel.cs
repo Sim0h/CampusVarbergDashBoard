@@ -9,6 +9,7 @@ namespace CampusVarbergDashBoard.ViewModels
         public GenderDistribution GenderDistribution { get; set; }
         public CompetenceDistribution CompetenceDistribution { get; set; }
         public IEnumerable<AgeDistribution> AgeDistribution { get; set; }
+
         public List<Applicant> Applicants { get; set; }
         public OfferedSpotDistribution OfferedSpotDistribution { get; set; }
         public string SelectedUtbildning { get; set; }
@@ -17,5 +18,8 @@ namespace CampusVarbergDashBoard.ViewModels
         public string SelectedTermin { get; set; }
 		public LateApplicationDistribution LateApplicationDistribution { get; set; }
         public AcceptedOfferDistribution AcceptedOfferDistribution { get; set; }
+
+        
+
     }
 }

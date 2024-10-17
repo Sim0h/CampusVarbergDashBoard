@@ -1,4 +1,5 @@
 ﻿using CampusVarbergDashBoard.Repository;
+using CampusVarbergDashBoard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CampusVarbergDashBoard.Controllers
@@ -6,25 +7,35 @@ namespace CampusVarbergDashBoard.Controllers
     public class StatusController : Controller
     {
         private readonly IApplicantRepository _applicantRepository;
-        public StatusController(IApplicantRepository applicantRepository)
+        private readonly IYearRepository _yearRepository;
+        public StatusController(IApplicantRepository applicantRepository, IYearRepository yearRepository)
         {
             _applicantRepository = applicantRepository;
+            _yearRepository = yearRepository;
         }
 
-
-        public async Task<IActionResult> Index(int? year)
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            var statusDistribution = await _applicantRepository.GetStatusDistributionAsync(year);
-            if (!statusDistribution.Any())
+            var statusDistributions = await _applicantRepository.GetStatusDistributionAsync();
+
+            List<StatusChartData> chartData = new List<StatusChartData>
             {
-                // Log or debug here
-                Console.WriteLine("No data returned from GetStatusDistributionAsync");
-            }
-            return View(statusDistribution);
+                new StatusChartData { Status = "Inlämnad Ansökan", Count = statusDistributions.Sum(s => s.InlämnadCount) },
+                new StatusChartData { Status = "Behöriga", Count = statusDistributions.Sum(s => s.BehörigCount) },
+                new StatusChartData { Status = "Erbjudna plats", Count = statusDistributions.Sum(s => s.ErbjudenPlatsTackatJaCount) }
+               
+            };
+
+            ViewBag.dataSource = chartData;
+            return View();
         }
 
+    }
 
-
-
+    public class StatusChartData
+    {
+        public string Status { get; set; }
+        public int Count { get; set; }
     }
 }
