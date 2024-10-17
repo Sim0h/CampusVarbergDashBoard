@@ -137,7 +137,7 @@ namespace CampusVarbergDashBoard.Controllers
 			};
 		}
 
-		private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants) //filter för erbjuden plats, klumpar tackat ja + inskriven
+		private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants)
 		{
 
 			return applicants.Select(a =>
@@ -180,7 +180,7 @@ namespace CampusVarbergDashBoard.Controllers
 			});
 		}
 
-		private IEnumerable<Applicant> AcceptedApplication(IEnumerable<Applicant> applicants) // filterar status på om man tackat ja / inskriven eller ej.
+		private IEnumerable<Applicant> AcceptedApplication(IEnumerable<Applicant> applicants)
 		{
 			return applicants.Select(a =>
 			{
