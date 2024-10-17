@@ -6,11 +6,14 @@ const hiddenNavbar = document.getElementById('hiddenNavbar')
 
 
 function onScroll() {
-    if (window.pageYOffset > headerHeight) {
-        hiddenNavbar.style.display = 'block';
-    }
-    else {
-        hiddenNavbar.style.display = 'none';
+    const pageWidth = window.innerWidth
+    if (pageWidth > 576) {
+        if (window.pageYOffset > headerHeight) {
+            hiddenNavbar.style.display = 'block';
+        }
+        else {
+            hiddenNavbar.style.display = 'none';
+        }
     }
 }
 

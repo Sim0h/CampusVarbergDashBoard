@@ -28,7 +28,7 @@ namespace CampusVarbergDashBoard
             builder.Services.AddControllersWithViews();
 
             //Syncfusion license
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NDaF5cWGNCf1NpRGVGfV5ycEVPal5ZTnJXUiweQnxTdEFjUH1bcHBWQGVcVER/WQ==");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBMAY9C3t2UlhhQlVMfV5DQmJPYVF2R2dJfFR0d19DY0wgOX1dQl9nSH5ScUVmWn1ac3ZUR2A=");
 
 
             var app = builder.Build();
