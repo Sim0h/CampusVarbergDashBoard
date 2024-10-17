@@ -14,22 +14,7 @@ namespace CampusVarbergDashBoard.Repository
         {
             _connectionString = connectionString;
         }
-
-    
-        public async Task<IEnumerable<YearDistribution>> GetAllYearsAsync(int year)
-        {
-            using (var connection = GetConnection())
-            {
-                string query = @"
-                        SELECT Inlämnad AS Year
-                        FROM dbo.ExcelData
-                        WHERE YEAR(Inlämnad) = @Year AND Inlämnad IS NOT NULL
-                        ORDER BY Inlämnad DESC";
-
-                return await connection.QueryAsync<YearDistribution>(query, new { Year = year });
-            }
-        }
-
+      
         public async Task<IEnumerable<string>> GetSpecificTermAsync(string term, int year)
         {
             using (var connection = GetConnection())
@@ -62,16 +47,7 @@ namespace CampusVarbergDashBoard.Repository
                 return result;
             }
         }
-
-        public async Task<IEnumerable<Applicant>> GetApplicantsByEducationAsync(string education)
-        {
-            using (var connection = GetConnection())
-            {
-                string query = "SELECT * FROM dbo.ExcelData WHERE Utbildning LIKE '%' + @Education + '%'";
-                return await connection.QueryAsync<Applicant>(query, new { Education = education });
-            }
-        }
-
+              
         public async Task<IEnumerable<Applicant>> GetApplicantsAsync()
         {
             using (var connection = GetConnection())

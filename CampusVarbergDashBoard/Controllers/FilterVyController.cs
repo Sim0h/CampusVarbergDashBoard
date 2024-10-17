@@ -293,12 +293,6 @@ namespace CampusVarbergDashBoard.Controllers
 				})
 			});
 
-			// Log the age distribution for debugging
-			foreach (var ageDist in ageDistribution)
-			{
-				Console.WriteLine($"Age Group: {ageDist.AgeRange}, Count: {ageDist.Count}");
-			}
-
 			return ageDistribution;
 		}
 
@@ -338,7 +332,7 @@ namespace CampusVarbergDashBoard.Controllers
 			return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 		}
 
-		private Dictionary<string, List<string>> GetEducationNameMapping()
+		private Dictionary<string, List<string>> GetEducationNameMapping() // Mapping för att kunna filtrera på olika namn för samma utbildning
 		{
 			return new Dictionary<string, List<string>>
 			{
