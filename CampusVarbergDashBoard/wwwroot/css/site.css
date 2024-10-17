@@ -324,9 +324,19 @@ body {
     }
 }
 
-@media (max-width: 768px) and (min-width:576px){
-    .nav-item a {
+@media (max-width: 992px) and (min-width:645px){
+
+    .nav-button {
         width: 20%;
+    }
+}
+@media (max-width: 645px) and (min-width:576px) {
+
+    .nav-button {
+        width: 15%;
+    }
+    .nav-item{
+        padding: 0 !important;
     }
 }
 
@@ -348,6 +358,9 @@ body {
     .card{
         min-width: 250px;
         max-width: 450px;
+    }
+    .nav-item a {
+        width: 100%;
     }
 }
 
