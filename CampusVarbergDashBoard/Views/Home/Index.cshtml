@@ -29,7 +29,6 @@
                             <div class="title">
                                 <h5>Antal sökande</h5><br />
                             </div>
-                            @await Component.InvokeAsync("TotalApplicants")<br /><br /><br />
                         </div>
                     </div>
                 </div>
@@ -40,7 +39,6 @@
                         <div class="title">
                             <h5>Könsfördelning</h5>
                         </div>
-                        @await Component.InvokeAsync("GenderDistribution")
                     </div>
                 </div>
             </div>
@@ -51,7 +49,6 @@
                             <div class="title">
                                 <h5>Kompetensfördelning</h5>
                             </div>
-                            @await Component.InvokeAsync("Competence")
 
                         </div>
                     </div>
@@ -63,7 +60,6 @@
                     <div class="title">
                         <h5>Sökta utbildningar</h5>
                     </div>
-                    @await Component.InvokeAsync("EducationDistribution")
                 </div>
             </div>
         </div>
@@ -74,7 +70,6 @@
                         <div class="title">
                             <h5>Karta översikt</h5>
                         </div>
-                        @Html.Partial("_HeatmapPartial", null, viewData)
 
                     </div>
                 </div>
