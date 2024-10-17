@@ -58,6 +58,7 @@ body {
 
 .nav-item a{
     width: 120px;
+    min-height: 40px;
     text-align:center;
     padding: 10px;
 
@@ -73,6 +74,7 @@ body {
     padding-bottom: 0 !important;
     position: relative;
     width: 100%;
+    min-height: 40px;
     z-index: 999;
 }
 
@@ -85,6 +87,7 @@ body {
     position: fixed;
     top: 0px; 
     width: 100%; 
+    min-height: 40px;
     z-index: 10000; 
 }
 
@@ -93,23 +96,10 @@ body {
     color: white !important;
 }
 
-.nav-item.separator {
-    position: relative;
-    margin-left:8%;
-    padding-left: 8%;
+
+.dashboard-container{
+    display:flex;
 }
-
-.nav-item.separator::before {
-    content: ""; /* Skapa ett tomt innehåll för linjen */
-    position: absolute; 
-    left: -8%;
-    top: 50%; 
-    transform: translateY(-50%); 
-    height: 70%; 
-    border-left: 1px solid black; 
-}
-
-
 
 .overview-container {
     margin: 5px;
@@ -136,8 +126,12 @@ body {
 
 
 /* DashboardLayout element styles  */
-#defaultLayout {
-    padding: 10px;
+/*#defaultLayout {
+    padding: 10px; 
+}*/
+
+/*.e-panel{
+    width: 30%;
 }
 
 .e-panel .e-panel-container {
@@ -162,11 +156,53 @@ body {
     align-items: center;
     font-size: 8px;
     text-align: left;
-}
+}*/
+
 
 .card {
+    margin: 0 5px 5px 5px;
+    border: 2px solid #ccc; /* Add a border */
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%; /* Make sure the card height expands properly */
     background-color: var(--base-color) !important;
 }
+
+    .card-body {
+        padding: 20px;
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        flex-direction: column; /* Ensure content is stacked vertically */
+        text-align: center; /* Align text in the center */
+        width: 95%;
+    }
+
+    .card-content p {
+        margin: 0;
+        font-size: 18px; /* Adjust text size */
+        color: var(--text-color);
+    }
+
+    /* Container spacing */
+    .container {
+        margin-top: 20px;
+    }
+
+    .card-body p {
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Style for empty data message */
+    p {
+
+        font-size: 16px;
+    }
 
 /*Kontakt*/
 .kontakt {
@@ -235,5 +271,71 @@ body {
     margin: 0 0 -1% 0;
 }
 
+.settings-container{
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
 
+
+/*@media settings*/
+
+
+@media (min-width: 576px) {
+    .nav-item.separator {
+        position: relative;
+        margin-left: 8%;
+        padding-left: 8%;
+    }
+
+        .nav-item.separator::before {
+            content: ""; /* Skapa ett tomt innehåll för linjen */
+            position: absolute;
+            left: -8%;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            border-left: 1px solid black;
+        }
+}
+
+@media (max-width: 576px) {
+    .nav-item a {
+        text-align: left;
+    }
+
+    .settings-container {
+        background-color: var(--base-color);
+    }
+
+    .card{
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-item a {
+        width: 20%;
+    }
+
+    .overview-container{
+        margin-left: 0;
+    }
+
+    .dashboard-container {
+        display: block;
+    }
+}
+
+@media (max-width: 992px){
+/*    .container{
+        width: 100%;
+    }*/
+    .card{
+        min-width: 250px;
+        max-width: 450px;
+    }
+}
 
