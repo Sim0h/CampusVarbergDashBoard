@@ -14,7 +14,24 @@ namespace CampusVarbergDashBoard.Repository
         {
             _connectionString = connectionString;
         }
-      
+
+
+
+        public async Task<IEnumerable<YearDistribution>> GetAllYearsAsync(int year)
+        {
+            using (var connection = GetConnection())
+            {
+                string query = @"
+                        SELECT Inlämnad AS Year
+                        FROM dbo.ExcelData
+                        WHERE YEAR(Inlämnad) = @Year
+                        ORDER BY Inlämnad DESC";
+
+                return await connection.QueryAsync<YearDistribution>(query, new { Year = year });
+            }
+        }
+
+
         public async Task<IEnumerable<string>> GetSpecificTermAsync(string term, int year)
         {
             using (var connection = GetConnection())
@@ -43,7 +60,7 @@ namespace CampusVarbergDashBoard.Repository
                 WHERE Inlämnad IS NOT NULL AND Inlämnad BETWEEN @StartDate AND @EndDate";
 
                 var result = await connection.QueryAsync<string>(query, new { StartDate = startDate, EndDate = endDate });
-              
+
                 return result;
             }
         }
@@ -56,6 +73,16 @@ namespace CampusVarbergDashBoard.Repository
                 var applicants = await connection.QueryAsync<Applicant>(query);
                 return applicants;
             }
+        }
+
+
+
+
+
+
+        public Task<IEnumerable<string>> GetSpecificYearAsync(string year)
+        {
+            throw new NotImplementedException();
         }
 
         private SqlConnection GetConnection()
