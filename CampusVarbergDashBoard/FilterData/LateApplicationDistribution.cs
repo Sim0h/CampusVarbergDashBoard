@@ -2,7 +2,7 @@
 {
 	public class LateApplicationDistribution
 	{
-		public int LateApplicationCount { get; set; }   // For "Sen anmälan"
-		public int NotLateApplicationCount { get; set; } // For "Ej sen anmälan"
+		public int LateApplicationCount { get; set; }   
+		public int NotLateApplicationCount { get; set; }
 	}
 }

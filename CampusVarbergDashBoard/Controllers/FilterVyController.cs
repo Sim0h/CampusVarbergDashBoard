@@ -137,8 +137,8 @@ namespace CampusVarbergDashBoard.Controllers
             };
         }
 
-        private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants)
-        {
+		private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants) //filter för erbjuden plats, klumpar tackat ja + inskriven
+		{
 
             return applicants.Select(a =>
             {
@@ -180,24 +180,24 @@ namespace CampusVarbergDashBoard.Controllers
             });
         }
 
-        private IEnumerable<Applicant> AcceptedApplication(IEnumerable<Applicant> applicants)
-        {
-            return applicants.Select(a =>
-            {
-                if (a.Status != null &&
-                a.Status.Contains(("Tackat ja"), StringComparison.OrdinalIgnoreCase))
-                {
-                    a.Status = "Tackat Ja";
-                }
-                else if (a.Status != null &&
-                a.Status.Contains(("inskriven"), StringComparison.OrdinalIgnoreCase))
-                {
-                    a.Status = "Tackat Ja";
-                }
-                else if (a.Status != null && a.Status.Contains("Tackat Nej", StringComparison.OrdinalIgnoreCase))
-                {
-                    a.Status = "Tackat Nej";
-                }
+		private IEnumerable<Applicant> AcceptedApplication(IEnumerable<Applicant> applicants)
+		{
+			return applicants.Select(a =>
+			{
+				if (a.Status != null &&
+				a.Status.Contains(("Tackat ja"), StringComparison.OrdinalIgnoreCase))
+				{
+					a.Status = "Tackat Ja";
+				}
+				else if (a.Status != null &&
+				a.Status.Contains(("inskriven"), StringComparison.OrdinalIgnoreCase))
+				{
+					a.Status = "Tackat Ja";
+				}
+				else if (a.Status != null && a.Status.Contains("Tackat Nej", StringComparison.OrdinalIgnoreCase))
+				{
+					a.Status = "Tackat Nej";
+				}
 
                 return a;
             });
@@ -333,13 +333,13 @@ namespace CampusVarbergDashBoard.Controllers
             return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         }
 
-        private Dictionary<string, List<string>> GetEducationNameMapping() // Mapping för att kunna filtrera på olika namn för samma utbildning
-        {
-            return new Dictionary<string, List<string>>
-            {
-                { "Medicinsk vårdadministratör", new List<string> { "Medicinsk Sekreterare", "Medicinsk Sekreterare / koordinator" } },
-                { "Digital analytiker", new List<string>() },
-                { "Elkonstruktör", new List<string>(){"Elingenjör/Elkonstruktör" } },
+		private Dictionary<string, List<string>> GetEducationNameMapping() // Mapping för att kunna filtrera på olika namn för samma utbildning
+		{
+			return new Dictionary<string, List<string>>
+			{
+				{ "Medicinsk vårdadministratör", new List<string> { "Medicinsk Sekreterare", "Medicinsk Sekreterare / koordinator" } },
+				{ "Digital analytiker", new List<string>() },
+				{ "Elkonstruktör", new List<string>(){"Elingenjör/Elkonstruktör" } },
 
 
             };
