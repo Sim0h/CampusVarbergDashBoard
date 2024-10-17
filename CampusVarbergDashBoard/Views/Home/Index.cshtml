@@ -5,6 +5,7 @@
 @{
     spacingModel modelValue = new spacingModel();
     modelValue.cellSpacing = new double[] { 10, 10 };
+   
 }
 @{
     var viewData = new ViewDataDictionary(ViewData)
@@ -13,6 +14,7 @@
         { "MapHeight", "400px" }
     };
 }
+
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
@@ -29,6 +31,7 @@
                             <div class="title">
                                 <h5>Antal sökande</h5><br />
                             </div>
+                            @await Html.PartialAsync("_TotalApplicantsOverall", Model.TotalApplicants)
                         </div>
                     </div>
                 </div>
@@ -39,6 +42,7 @@
                         <div class="title">
                             <h5>Könsfördelning</h5>
                         </div>
+                        @await Html.PartialAsync("_GenderDistributionOverall", Model.GenderDistribution)
                     </div>
                 </div>
             </div>
@@ -49,7 +53,7 @@
                             <div class="title">
                                 <h5>Kompetensfördelning</h5>
                             </div>
-
+                            @await Html.PartialAsync("_CompetenceOverall", Model.CompetenceDistribution)
                         </div>
                     </div>
                 </div>
@@ -60,6 +64,7 @@
                     <div class="title">
                         <h5>Sökta utbildningar</h5>
                     </div>
+                    @await Html.PartialAsync("_EducationDistributionOverall", Model.EducationDistribution)
                 </div>
             </div>
         </div>
@@ -70,7 +75,7 @@
                         <div class="title">
                             <h5>Karta översikt</h5>
                         </div>
-
+                    
                     </div>
                 </div>
             </div>
