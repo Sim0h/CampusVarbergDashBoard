@@ -15,7 +15,7 @@ namespace CampusVarbergDashBoard.Repository
             _connectionString = connectionString;
         }
 
-    
+
         public async Task<IEnumerable<YearDistribution>> GetAllYearsAsync(int year)
         {
             using (var connection = GetConnection())
@@ -58,7 +58,7 @@ namespace CampusVarbergDashBoard.Repository
                 WHERE Inlämnad BETWEEN @StartDate AND @EndDate";
 
                 var result = await connection.QueryAsync<string>(query, new { StartDate = startDate, EndDate = endDate });
-              
+
                 return result;
             }
         }
@@ -83,10 +83,10 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-		
 
 
-		public Task<IEnumerable<string>> GetSpecificYearAsync(string year)
+
+        public Task<IEnumerable<string>> GetSpecificYearAsync(string year)
         {
             throw new NotImplementedException();
         }

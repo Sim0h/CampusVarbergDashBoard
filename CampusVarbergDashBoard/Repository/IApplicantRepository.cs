@@ -29,7 +29,7 @@ namespace CampusVarbergDashBoard.Repository
 
 
 
-        Task<IEnumerable<Applicant>> GetApplicantsLocAsync();
+        Task<IEnumerable<Applicant>> GetApplicantsLocAsync(string ort, string postnummer, int? year, string term, string kön, string behörig, string utbildning);
         Task UpdateApplicantCoordinatesAsync(Applicant applicant);
         Task<IEnumerable<Applicant>> GetApplicantsWithoutCoordinatesAsync();
         Task<IEnumerable<Applicant>> GetApplicantsWithoutAgeAsync();
