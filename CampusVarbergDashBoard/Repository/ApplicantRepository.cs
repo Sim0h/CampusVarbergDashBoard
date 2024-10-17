@@ -2,6 +2,7 @@ using CampusVarbergDashBoard.FilterData;
 using CampusVarbergDashBoard.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Text;
 
 namespace CampusVarbergDashBoard.Repository
 {
@@ -48,7 +49,7 @@ namespace CampusVarbergDashBoard.Repository
 						WHERE Utbildning NOT LIKE '%INSTÄLLD%'
                         GROUP BY Utbildning"; // under from stod det Applicants, har ingen tabell vid namn Applicants :) lade också till WHERE för att filtrera bort Inställda utbildningar
 
-           
+
                 return await connection.QueryAsync<EducationDistribution>(query);
             }
         }
@@ -118,27 +119,65 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-
-
-
-
-        public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync()
+        public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync(string ort, string postnummer, int? year, string term, string kön, string behörig, string utbildning)
         {
             using (var connection = GetConnection())
             {
-                string query = @"
-                    SELECT 
-                        ID,
-                        Postnummer, 
-                        Ort, 
-                        Latitude, 
-                        Longitud
-                    FROM dbo.ExcelData";
+                var query = new StringBuilder("SELECT ID, Postnummer, Ort, Latitude, Longitud, Kön, Behörig, Utbildning, Inlämnad FROM dbo.ExcelData WHERE 1=1");
+                var parameters = new DynamicParameters();
 
-                // Hämta alla relevanta fält som en lista för karta
-                return (await connection.QueryAsync<Applicant>(query)).ToList();
+                if (!string.IsNullOrEmpty(ort))
+                {
+                    query.Append(" AND Ort = @Ort");
+                    parameters.Add("Ort", ort);
+                }
+
+                if (!string.IsNullOrEmpty(postnummer))
+                {
+                    query.Append(" AND Postnummer = @Postnummer");
+                    parameters.Add("Postnummer", postnummer);
+                }
+
+                if (year.HasValue)
+                {
+                    query.Append(" AND YEAR(Inlämnad) = @Year");
+                    parameters.Add("Year", year.Value);
+                }
+
+                if (!string.IsNullOrEmpty(term))
+                {
+                    if (term.Equals("Hösttermin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query.Append(" AND MONTH(Inlämnad) BETWEEN 1 AND 6");
+                    }
+                    else if (term.Equals("Vårtermin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query.Append(" AND MONTH(Inlämnad) BETWEEN 7 AND 12");
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(kön) && kön != "Alla Kön")
+                {
+                    query.Append(" AND Kön = @Kön");
+                    parameters.Add("Kön", kön);
+                }
+
+                if (!string.IsNullOrEmpty(behörig) && behörig != "Alla Behörig")
+                {
+                    query.Append(" AND Behörig = @Behörig");
+                    parameters.Add("Behörig", behörig);
+                }
+
+                if (!string.IsNullOrEmpty(utbildning) && utbildning != "Alla Utbildningar")
+                {
+                    query.Append(" AND Utbildning LIKE '%' + @Utbildning + '%'");
+                    parameters.Add("Utbildning", utbildning);
+                }
+
+                return await connection.QueryAsync<Applicant>(query.ToString(), parameters);
             }
         }
+
 
         public async Task UpdateApplicantCoordinatesAsync(Applicant applicant)
         {
@@ -166,6 +205,25 @@ namespace CampusVarbergDashBoard.Repository
                     Longitud = applicant.Longitud,
                     ID = applicant.ID
                 });
+            }
+        }
+
+
+        public async Task<IEnumerable<Applicant>> GetMenAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = "SELECT * FROM dbo.ExcelData WHERE Kön = 'Man'";
+                return await connection.QueryAsync<Applicant>(query);
+            }
+        }
+
+        public async Task<IEnumerable<Applicant>> GetWomenAsync()
+        {
+            using (var connection = GetConnection())
+            {
+                string query = "SELECT * FROM dbo.ExcelData WHERE Kön = 'Kvinna'";
+                return await connection.QueryAsync<Applicant>(query);
             }
         }
 
@@ -206,7 +264,7 @@ namespace CampusVarbergDashBoard.Repository
             if (age <= 60) return "56-60";
             return "Över 60";
         }
-        
+
         public async Task<IEnumerable<Applicant>> GetApplicantsWithoutCoordinatesAsync()
         {
             using (var connection = GetConnection())
@@ -259,6 +317,7 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
+
         public async Task<TotalApplicants> GetApplicantsOfferedPlaceAsync(int? year, string education, string gender, string term)
         {
             using (var connection = GetConnection())
@@ -280,5 +339,7 @@ namespace CampusVarbergDashBoard.Repository
                 };
             }
         }
+
+
     }
 }
