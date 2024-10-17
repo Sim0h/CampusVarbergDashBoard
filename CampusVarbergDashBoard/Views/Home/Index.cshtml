@@ -1,4 +1,5 @@
-@model Applicant
+@model CampusVarbergDashBoard.ViewModels.DashboardViewModel
+
 
 
 @{
@@ -17,142 +18,64 @@
 <script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
-<div class="container">
-    <div class="overview-container">
+@* <div class="container">
+ *@    <div class="overview-container">
         <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
-        <div class="dashboard-container">
-            <div class="control-section">
-                <!--  DashboardLayout element declaration -->
-                <ejs-dashboardlayout id="defaultLayout" columns="6" cellSpacing="modelValue.cellSpacing">
-                    <e-dashboardlayout-panels>
-
-                        <!--Panel 1 Donut-->
-                        <e-dashboardlayout-panel id="Panel1" sizeX="2" sizeY="2" row="0" col="0">
-                            <e-content-template>
-                                <div>
-                                    <div class="e-panel-container">
-                                        <div class="e-panel-header">
-                                            <div>
-                                                Antal sökande
-                                            </div>
-                                        </div>
-                                        <div class="e-panel-content">
-                                            @await Component.InvokeAsync("TotalApplicants")
-                                        </div>
-                                    </div>
-                                </div>
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-                        
-                        <!--Panel 2 Donut-->
-                        <e-dashboardlayout-panel id="Panel2" sizeX="2" sizeY="2" row="0" col="2">
-                            <e-content-template>
-                                <div>
-                                    <div class="e-panel-container">
-                                        <div class="e-panel-header">
-                                            <div>
-                                                Könsfördelning
-                                            </div>
-                                        </div>
-                                        <div class="e-panel-content">
-                                            @await Component.InvokeAsync("GenderDistribution")
-                                        </div>
-                                    </div>
-                                </div>
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-                        
-                        <!--Panel 3 Donut-->
-                        <e-dashboardlayout-panel id="Panel3" sizeX="2" sizeY="2" row="2" col="0">
-                            <e-content-template>
-                                <div>
-                                    <div class="e-panel-container">
-                                        <div class="e-panel-header">
-                                            <div>
-                                                Kompetensfördelning
-                                            </div>
-                                        </div>
-                                        <div class="e-panel-content">
-                                            @await Component.InvokeAsync("Competence")
-                                        </div>
-                                    </div>
-                                </div>
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 4 Donut-->
-                        <e-dashboardlayout-panel id="Panel4" sizeX="2" sizeY="2" row="2" col="0">
-                            <e-content-template>
-                                <div>
-                                    <div class="e-panel-container">
-                                        <div class="e-panel-header">
-                                            <div>
-                                                Sökta Utbildningar
-                                            </div>
-                                        </div>
-                                        <div class="e-panel-content">
-                                            @await Component.InvokeAsync("EducationDistribution")
-                                        </div>
-                                    </div>
-                                </div>
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 5 Age Chart-->
-                        <e-dashboardlayout-panel id="Panel5" sizeX="6" sizeY="3" row="4" col="0">
-                            <e-content-template>
-                                <div>
-                                    <div class="e-panel-container">
-                                        <div class="e-panel-header">
-                                            <div>
-                                                Åldersfördelning
-                                            </div>
-                                        </div>
-                                        <div class="e-panel-content">
-                                            @await Component.InvokeAsync("AgeDistribution")
-                                        </div>
-                                    </div>
-                                </div>
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 6 kart-vy-->
-                        <e-dashboardlayout-panel id="Panel6" sizeX="2" sizeY="2" row="0" col="4">
-                            <e-content-template>
-                                <div>
-                                    <div class="e-panel-container">
-                                        <div class="e-panel-header">
-                                            <div>
-                                                Karta Översikt
-                                            </div>
-                                        </div>
-                                        <div class="e-panel-content">
-                                            @Html.Partial("_HeatmapPartial", null, viewData)
-                                        </div>
-                                    </div>
-                                </div>
-                            </e-content-template>
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 7 Stapel/hockeyklubba-->
-                        <e-dashboardlayout-panel id="Panel7" sizeX="4" sizeY="2" row="4" col="0" content="<div>7</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 8 Donut-->
-                        <e-dashboardlayout-panel id="Panel8" sizeX="2" sizeY="2" row="6" col="0" content="<div>8</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 9 Donut-->
-                        <e-dashboardlayout-panel id="Panel9" sizeX="2" sizeY="2" row="6" col="2" content="<div>9</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 10 Donut-->
-                        <e-dashboardlayout-panel id="Panel10" sizeX="2" sizeY="2" row="6" col="4" content="<div>10</div>">
-                        </e-dashboardlayout-panel>
-
-                    </e-dashboardlayout-panels>
-                </ejs-dashboardlayout>
-                <!-- end of dashboardlayout element -->
+        <div class="row">
+                @*card 1*@
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title">
+                                <h5>Antal sökande</h5><br />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @*card 2*@
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="title">
+                            <h5>Könsfördelning</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
-    </div>
-</div>
+                @*card 3*@
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title">
+                                <h5>Kompetensfördelning</h5>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+        @*card 4*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Sökta utbildningar</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+            @*card 5*@
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="title">
+                            <h5>Karta översikt</h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+@*     </div>
+ *@

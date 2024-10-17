@@ -16,6 +16,7 @@ namespace CampusVarbergDashBoard.Repository
         }
 
 
+
         public async Task<IEnumerable<YearDistribution>> GetAllYearsAsync(int year)
         {
             using (var connection = GetConnection())
@@ -29,6 +30,7 @@ namespace CampusVarbergDashBoard.Repository
                 return await connection.QueryAsync<YearDistribution>(query, new { Year = year });
             }
         }
+
 
         public async Task<IEnumerable<string>> GetSpecificTermAsync(string term, int year)
         {
@@ -55,33 +57,25 @@ namespace CampusVarbergDashBoard.Repository
                 string query = @"
                 SELECT CONVERT(varchar, Inlämnad, 23) AS Termin
                 FROM dbo.ExcelData
-                WHERE Inlämnad BETWEEN @StartDate AND @EndDate";
+                WHERE Inlämnad IS NOT NULL AND Inlämnad BETWEEN @StartDate AND @EndDate";
 
                 var result = await connection.QueryAsync<string>(query, new { StartDate = startDate, EndDate = endDate });
 
                 return result;
             }
         }
-
-        public async Task<IEnumerable<Applicant>> GetApplicantsByEducationAsync(string education)
-        {
-            using (var connection = GetConnection())
-            {
-                string query = "SELECT * FROM dbo.ExcelData WHERE Utbildning LIKE '%' + @Education + '%'";
-                return await connection.QueryAsync<Applicant>(query, new { Education = education });
-            }
-        }
-
+              
         public async Task<IEnumerable<Applicant>> GetApplicantsAsync()
         {
             using (var connection = GetConnection())
             {
                 string query = "SELECT * FROM dbo.ExcelData";
                 var applicants = await connection.QueryAsync<Applicant>(query);
-                Console.WriteLine($"Retrieved {applicants.Count()} applicants.");
                 return applicants;
             }
         }
+
+
 
 
 
