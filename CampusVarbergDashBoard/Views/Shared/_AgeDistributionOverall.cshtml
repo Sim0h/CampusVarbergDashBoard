@@ -18,7 +18,8 @@
     <e-chart-primaryxaxis valueType="Category"></e-chart-primaryxaxis>
     <e-chart-primaryyaxis></e-chart-primaryyaxis>
     <e-series-collection>
-        <e-series dataSource="ViewBag.dataSource" xName="AgeRange" yName="Count" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Column">
+        <e-series dataSource="ViewBag.dataSource" xName="AgeRange" yName="Count" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line">
+            <e-series-marker visible="true" width="10" height="10"></e-series-marker>
         </e-series>
     </e-series-collection>
     <e-chart-tooltipsettings enable="true"></e-chart-tooltipsettings>

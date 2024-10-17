@@ -40,7 +40,7 @@
 <div class="container">
 	<div class="row mb-4">
 		<!-- First 3 cards -->
-		<div class="col-md-4 mb-4">
+		<div class="col-lg-4 mb-4">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -57,7 +57,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 mb-4">
+		<div class="col-lg-4 mb-4">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -74,7 +74,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 mb-4">
+		<div class="col-lg-4 mb-4">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -91,7 +91,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 mb-4">
+		<div class="col-lg-4 mb-4">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -108,7 +108,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 mb-4">
+		<div class="col-lg-4 mb-4">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -125,7 +125,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4 mb-4">
+		<div class="col-lg-4 mb-4">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -146,7 +146,7 @@
 
 	<!-- Fourth card below the first three -->
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-lg-12">
 			<div class="card">
 				<div class="card-body">
 					<div class="title">
@@ -167,128 +167,171 @@
 </div>
 
 <style>
-	/* Behåll layouten för dropdowns */
-	.dropdown-container {
-		display: flex;
-		gap: 20px;
-		justify-content: center;
-		padding-top: 15px;
-		padding-bottom: 15px;
-		background-color: #f873b6;
-		border-radius: 4px;
+/* Behåll layouten för dropdowns */
+.dropdown-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+	align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #f873b6;
+    border-radius: 4px;
+}
+
+.dropdown-item {
+    flex: 1;
+    max-width: 300px;
+	min-width: 120px;
+}
+
+.dropdown-item:hover {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.dropdown-item .e-control-wrapper {
+    border-radius: 4px;
+}
+
+.e-ddl.e-input-group.e-control-wrapper .e-input {
+    font-size: 15px;
+    font-family: inherit;
+    color: black;
+    background: #32a5ab;
+}
+
+.btn {
+    color: #ffffff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.button-container {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.applicant-list {
+    margin-top: 20px;
+}
+
+	form {
+		width: 100%; /* Full width for the form */
+		max-width: 96%; /* Set max width for alignment */
+		margin: 0 auto; /* Center align the form */
 	}
 
-	.dropdown-item {
-		flex: 1;
-		max-width: 300px;
+.card {
+    margin: 0 5px 5px 5px;
+    border: 2px solid #ccc; /* Add a border */
+    border-radius: 12px; /* Add rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Add a subtle shadow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%; /* Make sure the card height expands properly */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-body {
+    padding: 10px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column; /* Ensure content is stacked vertically */
+    text-align: center; /* Align text in the center */
+    padding: 15px;
+    max-width: 100%;
+}
+
+	.title h5 {
+		margin-top: 20px; /* Lower the title */
+		margin-bottom: 0; /* Ensure no extra spacing below the title */
+		font-size: 1.5rem; /* Adjust title size */
+		font-weight: 600; /* Make title bold */
+		text-align: center; /* Center the title horizontally */
+		color: #333; /* Set a more prominent color */
 	}
 
-		.dropdown-item:hover {
-			background-color: transparent;
-			border-color: transparent;
-			box-shadow: none;
-		}
-
-		.dropdown-item .e-control-wrapper {
-			border-radius: 4px;
-		}
-
-	.e-ddl.e-input-group.e-control-wrapper .e-input {
-		font-size: 15px;
-		font-family: inherit;
-		color: black;
-		background: #32a5ab;
+	.title {
+		margin-bottom: 0; /* Remove unnecessary bottom margin */
 	}
 
-	.btn {
-		color: #ffffff;
-		background-color: #337ab7;
-		border-color: #2e6da4;
-	}
+.pie-chart-container {
+    margin-top: 20px;
+    text-align: center;
+}
 
-	.button-container {
-		display: inline-block;
-		margin-bottom: 0;
-		font-weight: normal;
-		text-align: center;
-		vertical-align: middle;
-		touch-action: manipulation;
-		cursor: pointer;
-		background-image: none;
-		border: 1px solid transparent;
-		white-space: nowrap;
-		padding: 6px 12px;
-		font-size: 14px;
-		line-height: 1.42857143;
-		border-radius: 4px;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-		
-	}
+.widget-chart {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 200px; /* Ensure cards have a uniform height */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text inside */
+}
 
-	.applicant-list {
-		margin-top: 20px;
-	}
+.card-content p {
+    margin: 0;
+    font-size: 18px; /* Adjust text size */
+    color: var(--text-color);
+}
 
-	.card {
-		margin-bottom: 10px;
-		border: 2px solid #ccc; /* Add a border */
-		border-radius: 8px; /* Add rounded corners */
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		height: 100%; /* Make sure the card height expands properly */
-	}
+/* Container spacing */
+.container {
+    margin-top: 20px;
+}
 
-	.card-body {
-		padding: 20px;
-		display: flex;
-		justify-content: center; /* Center horizontally */
-		align-items: center; /* Center vertically */
-		flex-direction: column; /* Ensure content is stacked vertically */
-		text-align: center; /* Align text in the center */
-	}
+.card-body p {
+    text-align: center;
+    width: 100%;
+}
 
-	.pie-chart-container {
-		margin-top: 20px;
-		text-align: center;
-	}
+/* Style for empty data message */
+p {
+    font-size: 16px;
+}
 
-	.widget-chart {
-		background-color: #f9f9f9;
-		padding: 20px;
-		border-radius: 8px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		min-height: 200px; /* Ensure cards have a uniform height */
-		display: flex;
-		justify-content: center; /* Center horizontally */
-		align-items: center; /* Center vertically */
-		text-align: center; /* Center text inside */
-	}
+.row, .col-lg-12{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
 
-	.card-content p {
-		margin: 0;
-		font-size: 18px; /* Adjust text size */
-		color: var(--text-color);
-	}
+.card, .card-body{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
 
-	/* Container spacing */
-	.container {
-		margin-top: 20px;
-	}
+/* Responsive chart and layout styles */
+#ageDistributionChart {
+    width: 100%;
+    max-width: 100%;
+    height: 400px; /* Default height for desktop */
+}
 
-	.card-body p {
-		text-align: center;
-		width: 100%;
-	}
 
-	/* Style for empty data message */
-	p {
-		
-		font-size: 16px;
-	}
 </style>

@@ -15,7 +15,8 @@ namespace CampusVarbergDashBoard.Repository
             _connectionString = connectionString;
         }
 
-    
+
+
         public async Task<IEnumerable<YearDistribution>> GetAllYearsAsync(int year)
         {
             using (var connection = GetConnection())
@@ -23,12 +24,13 @@ namespace CampusVarbergDashBoard.Repository
                 string query = @"
                         SELECT Inlämnad AS Year
                         FROM dbo.ExcelData
-                        WHERE YEAR(Inlämnad) = @Year AND Inlämnad IS NOT NULL
+                        WHERE YEAR(Inlämnad) = @Year
                         ORDER BY Inlämnad DESC";
 
                 return await connection.QueryAsync<YearDistribution>(query, new { Year = year });
             }
         }
+
 
         public async Task<IEnumerable<string>> GetSpecificTermAsync(string term, int year)
         {
@@ -58,20 +60,11 @@ namespace CampusVarbergDashBoard.Repository
                 WHERE Inlämnad IS NOT NULL AND Inlämnad BETWEEN @StartDate AND @EndDate";
 
                 var result = await connection.QueryAsync<string>(query, new { StartDate = startDate, EndDate = endDate });
-              
+
                 return result;
             }
         }
-
-        public async Task<IEnumerable<Applicant>> GetApplicantsByEducationAsync(string education)
-        {
-            using (var connection = GetConnection())
-            {
-                string query = "SELECT * FROM dbo.ExcelData WHERE Utbildning LIKE '%' + @Education + '%'";
-                return await connection.QueryAsync<Applicant>(query, new { Education = education });
-            }
-        }
-
+              
         public async Task<IEnumerable<Applicant>> GetApplicantsAsync()
         {
             using (var connection = GetConnection())
@@ -80,6 +73,16 @@ namespace CampusVarbergDashBoard.Repository
                 var applicants = await connection.QueryAsync<Applicant>(query);
                 return applicants;
             }
+        }
+
+
+
+
+
+
+        public Task<IEnumerable<string>> GetSpecificYearAsync(string year)
+        {
+            throw new NotImplementedException();
         }
 
         private SqlConnection GetConnection()
