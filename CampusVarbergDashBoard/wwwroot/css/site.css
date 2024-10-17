@@ -278,6 +278,170 @@ body {
     padding: 0;
 }
 
+/*Filtervy Styling*/
+.dropdown-container-filtervy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #f873b6;
+    border-radius: 4px;
+}
+
+.dropdown-item {
+    flex: 1;
+}
+
+    .dropdown-item:hover {
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .dropdown-item .e-control-wrapper {
+        border-radius: 4px;
+    }
+
+.e-ddl.e-input-group.e-control-wrapper .e-input {
+    font-size: 15px;
+    font-family: inherit;
+    color: black;
+    background: #32a5ab;
+}
+
+.btn {
+    color: #ffffff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.button-container {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.applicant-list {
+    margin-top: 20px;
+}
+
+form {
+    width: 100%;
+    max-width: 96%;
+    margin: 0 auto;
+}
+
+.card {
+    margin: 0 5px 5px 5px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-body {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+    max-width: 100%;
+}
+
+.title h5 {
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.title {
+    margin-bottom: 0;
+}
+
+.pie-chart-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.widget-chart {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.card-content p {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+
+.container {
+    margin-top: 20px;
+}
+
+.card-body p {
+    text-align: center;
+    width: 100%;
+}
+
+
+p {
+    font-size: 16px;
+}
+
+.row, .col-lg-12 {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.card, .card-body {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+
+#ageDistributionChart {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+}
 
 /*@media settings*/
 
@@ -339,6 +503,9 @@ body {
     .dashboard-container {
         display: block;
     }
+    .dropdown-container-filtervy{
+        display: block;
+    }
 }
 
 @media (max-width: 992px){
@@ -350,4 +517,5 @@ body {
         max-width: 450px;
     }
 }
+
 
