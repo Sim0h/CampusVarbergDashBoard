@@ -1,3 +1,31 @@
+:root {
+    --base-color: white;
+    --background-color: #dedfe4;
+    --text-color: black;
+    --secondary-text: white;
+    --img-invert: brightness(100%);
+    --link-text-color: #40658b;
+}
+
+.darkmode {
+/*    
+    Dark blue darkmode
+    --base-color: #101425;
+    --background-color: #070b1d;*/
+
+/*  Dark grey darkmode  */
+    --base-color: #2a2a2a;
+    --background-color: #1a1a1a;
+
+    --text-color: white;
+    --secondary-text: black;
+    --img-invert: brightness(1000%);
+    --link-text-color: #3075ba;
+}
+
+
+
+
 html {
   font-size: 14px;
 }
@@ -20,7 +48,8 @@ html {
 body {
     margin-bottom: 60px;
     font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-    background-color: #dedfe4;
+    background-color: var(--background-color);
+    color: var(--text-color); 
 }
 
 .nav-item{
@@ -29,40 +58,464 @@ body {
 
 .nav-item a{
     width: 120px;
+    min-height: 40px;
     text-align:center;
+    padding: 10px;
+
 }
 
 /*.navbar-nav{
     margin-left: 10%;
 }*/
 
-.navbar {
+.navbar-site {
     background-color: #f6bf45 !Important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    position: relative;
+    width: 100%;
+    min-height: 40px;
+    z-index: 999;
+}
+
+/* Dold navbar */
+.navbar-hidden {
+    display: none; 
+    background-color: #f6bf45 !Important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    position: fixed;
+    top: 0px; 
+    width: 100%; 
+    min-height: 40px;
+    z-index: 10000; 
 }
 
 .nav-button:hover {
-    background-color: #D2E6EF !Important;
+    background-color: #6abdc4 !Important;
+    color: white !important;
 }
 
-.nav-item.separator {
-    border-left: 1px solid black; /* Vänsterkant på Inställningar */
-    margin-left: 8%; /* Utrymme till vänster om strecket */
-    padding-left: 8%; /* Utrymme till vänster om innehållet */
+
+.dashboard-container{
+    display:flex;
 }
+
+.overview-container {
+    margin: 5px;
+    width: 90%;
+    margin-left: 5%;
+}
+
+.overview-title{
+    margin:20px 0;
+    
+}
+
+.sticky-navbar {
+    position: -webkit-sticky; /* För Safari */
+    position: sticky !important;
+    top: 0 !important;
+}
+
+.logo{
+    filter: var(--img-invert);
+}
+
 
 
 
 /* DashboardLayout element styles  */
-#defaultLayout {
-    padding: 10px;
+/*#defaultLayout {
+    padding: 10px; 
+}*/
+
+/*.e-panel{
+    width: 30%;
 }
 
-#defaultLayout .e-panel .e-panel-container {
-    vertical-align: middle;
-    font-weight: 600;
+.e-panel .e-panel-container {
+    vertical-align: top;
+    font-weight: bold;
+    padding: 10px;
+    background-color: var(--base-color) !Important;
+    color: var(--text-color) !Important;
+}
+
+.e-panel .e-panel-header {
     font-size: 20px;
+    margin-top: 0;
+    padding: 10px;
     text-align: center;
-    line-height: 160px;
+    color: var(--text-color) !Important;
+}
+
+.e-panel .e-panel-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 8px;
+    text-align: left;
+}*/
+
+
+.card {
+    margin: 0 5px 5px 5px;
+    border: 2px solid #ccc; /* Add a border */
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%; /* Make sure the card height expands properly */
+    background-color: var(--base-color) !important;
+}
+
+    .card-body {
+        padding: 20px;
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        flex-direction: column; /* Ensure content is stacked vertically */
+        text-align: center; /* Align text in the center */
+        width: 95%;
+    }
+
+    .card-content p {
+        margin: 0;
+        font-size: 18px; /* Adjust text size */
+        color: var(--text-color);
+    }
+
+    /* Container spacing */
+    .container {
+        margin-top: 20px;
+    }
+
+    .card-body p {
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Style for empty data message */
+    p {
+
+        font-size: 16px;
+    }
+
+/*Kontakt*/
+.kontakt {
+    margin: 0 auto;
+    width: 80%;
+    background-color: var(--base-color);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.kontakt-content {
+    flex: 1;
+    min-width: 300px;
+    margin: 5% 6% 0 6%
+}
+
+.kontakt-content p {
+    margin: 5% 0;
+}
+
+.img-container {
+    background: blanchedalmond;
+    flex: 1;
+    min-width: 300px;
+    margin: 11% 6%;
+}
+
+.img-block {
+    width: 400px;
+    height: 400px;
+}
+
+.text-kommunikation {
+    flex-basis: 100%;
+    align-items: unset;
+    margin: 2% 6% 6% 6%
+}
+
+.kontakt a {
+    color: var(--link-text-color);
+    text-decoration: none;
+}
+
+.kontakt .fa {
+    font-size: 14px;
+}
+
+
+/*Settings*/
+.settings-page {
+    margin: 0 auto;
+    width: 80%;
+    background-color: var(--base-color);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.settings-content {
+    flex: 1;
+    margin: 5% 6% 0 6%;
+}
+
+.settings-content h6 {
+    margin: 0 0 -1% 0;
+}
+
+.settings-container{
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+
+/*Filtervy Styling*/
+.dropdown-container-filtervy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #f873b6;
+    border-radius: 4px;
+}
+
+.dropdown-item {
+    flex: 1;
+}
+
+    .dropdown-item:hover {
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .dropdown-item .e-control-wrapper {
+        border-radius: 4px;
+    }
+
+.e-ddl.e-input-group.e-control-wrapper .e-input {
+    font-size: 15px;
+    font-family: inherit;
+    color: black;
+    background: #32a5ab;
+}
+
+.btn {
+    color: #ffffff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.button-container {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.applicant-list {
+    margin-top: 20px;
+}
+
+form {
+    width: 100%;
+    max-width: 96%;
+    margin: 0 auto;
+}
+
+.card {
+    margin: 0 5px 5px 5px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-body {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+    max-width: 100%;
+}
+
+.title h5 {
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.title {
+    margin-bottom: 0;
+}
+
+.pie-chart-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.widget-chart {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.card-content p {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+
+.container {
+    margin-top: 20px;
+}
+
+.card-body p {
+    text-align: center;
+    width: 100%;
+}
+
+
+p {
+    font-size: 16px;
+}
+
+.row, .col-lg-12 {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.card, .card-body {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+
+#ageDistributionChart {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+}
+
+/*@media settings*/
+
+
+@media (min-width: 576px) {
+    .nav-item.separator {
+        position: relative;
+        margin-left: 8%;
+        padding-left: 8%;
+    }
+
+        .nav-item.separator::before {
+            content: ""; /* Skapa ett tomt innehåll för linjen */
+            position: absolute;
+            left: -8%;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            border-left: 1px solid black;
+        }
+}
+
+@media (max-width: 576px) {
+    .nav-item a {
+        text-align: left;
+    }
+
+    .navbar-nav .nav-link{
+        padding-left: 20px;
+    }
+
+    .nav-button {
+        padding: 10px;
+        width: 150px;
+    }
+
+    .settings-container {
+        background-color: var(--base-color);
+    }
+
+    .card{
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) and (min-width:576px){
+    .nav-item a {
+        width: 20%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .overview-container{
+        margin-left: 0;
+    }
+
+    .dashboard-container {
+        display: block;
+    }
+    .dropdown-container-filtervy{
+        display: block;
+    }
+}
+
+@media (max-width: 992px){
+/*    .container{
+        width: 100%;
+    }*/
+    .card{
+        min-width: 250px;
+        max-width: 450px;
+    }
 }
 
 

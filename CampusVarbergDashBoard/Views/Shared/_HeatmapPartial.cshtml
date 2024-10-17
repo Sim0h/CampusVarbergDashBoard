@@ -1,0 +1,59 @@
+﻿
+<div id="@ViewData["MapId"]" style="height: 300px; width: 100%; "></div>
+
+<script>
+
+    var map = L.map('@ViewData["MapId"]', {
+        center: [63.0, 10.0], // Justerad mittpunkt över Sverige
+        zoom: 5,
+        minZoom: 5,
+        maxZoom: 18,
+        maxBounds: [
+            [50.0, 10.0],  // Sydvästlig gräns för Sverige
+            [70.0, 55.0]   // Nordostlig gräns för Sverige
+        ],
+        maxBoundsViscosity: 1.0
+    });
+
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 18,
+        minZoom: 5
+    }).addTo(map);
+
+    
+    fetch('/GeoData/heatmap-data')
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.coordinates) {
+                var jsonData = data.coordinates;
+
+                var heatmapPoints = jsonData.map(d => [
+                    parseFloat(d.latitude),
+                    parseFloat(d.longitude),
+                    parseFloat(d.antalSokande)
+                ]);
+                var validHeatmapPoints = heatmapPoints.filter(point =>
+                    !isNaN(point[0]) && !isNaN(point[1]) && point[0] !== 0 && point[1] !== 0
+                );
+
+                
+                var heatmapLayer = L.heatLayer(validHeatmapPoints, {
+                    radius: 15,
+                    blur: 20,
+                    maxZoom: 10,
+                    gradient: {
+                        0.4: 'blue',
+                        0.6: 'cyan',
+                        0.7: 'lime',
+                        0.8: 'yellow',
+                        1: 'red'
+                    }
+                }).addTo(map);
+            } else {
+                console.warn('Ingen giltig data mottagen för heatmapen');
+            }
+        })
+        .catch(error => console.error('Error loading data from controller:', error));
+</script>

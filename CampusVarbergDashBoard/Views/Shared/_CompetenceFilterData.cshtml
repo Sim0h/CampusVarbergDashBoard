@@ -1,0 +1,29 @@
+﻿@model CampusVarbergDashBoard.ViewModels.FilterViewModel
+
+@{
+    var competenceDistribution = Model?.CompetenceDistribution;
+    var competenceData = new List<object>();
+
+    if (competenceDistribution != null)
+    {
+        competenceData.Add(new { xValue = "Behörig", yValue = competenceDistribution.CompetenceCount, fill = "RGB(205, 51, 117)" });
+        competenceData.Add(new { xValue = "Ej behörig", yValue = competenceDistribution.NonCompetenceCount, fill = "RGB(0, 131, 145)" });
+    }
+}
+
+@if (competenceDistribution != null)
+{
+    <ejs-accumulationchart id="competence" width="70%" height="70%">
+        <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
+        </e-accumulationchart-legendsettings>
+        <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+        <e-accumulation-series-collection>
+            <e-accumulation-series dataSource="competenceData" xName="xValue" yName="yValue" innerRadius="40%" pointColorMapping="fill">
+            </e-accumulation-series>
+        </e-accumulation-series-collection>
+    </ejs-accumulationchart>
+}
+else
+{
+    <p>Competence distribution data is not available.</p>
+}

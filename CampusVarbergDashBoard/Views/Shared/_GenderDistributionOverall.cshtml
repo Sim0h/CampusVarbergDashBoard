@@ -1,0 +1,19 @@
+﻿@model GenderDistribution
+
+@{
+    List<GenderDistribution> data = new List<GenderDistribution>
+    {
+        new GenderDistribution { xValue="Män", yValue = Model.MaleCount },
+        new GenderDistribution { xValue ="Kvinnor",  yValue = Model.FemaleCount },
+    };
+}
+<ejs-accumulationchart id="gender" width="70%" height="70%">
+    <e-accumulationchart-legendsettings visible="true" position="Bottom" alignment="Center" toggleVisibility="false">
+        <e-legendsettings-textstyle color="var(--text-color)"></e-legendsettings-textstyle>
+    </e-accumulationchart-legendsettings>
+    <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+    <e-accumulation-series-collection>
+        <e-accumulation-series dataSource="data" xName="xValue" yName="yValue" name="Könsfördelning" innerRadius="40%">
+        </e-accumulation-series>
+    </e-accumulation-series-collection>
+</ejs-accumulationchart>

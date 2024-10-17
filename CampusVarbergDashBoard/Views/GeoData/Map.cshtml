@@ -1,0 +1,506 @@
+﻿@{
+    ViewData["Title"] = "Heatmap";
+}
+
+<!-- Syncfusion CSS -->
+@* <link href="https://cdn.syncfusion.com/ej2/20.2.36/material.css" rel="stylesheet" /> *@
+
+<!-- Lägg till CSS för Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<div class="dropdown-container">
+    <div class="dropdown-item">
+        <label for="utbildningDropdown">Utbildning</label>
+        <input type="text" id="utbildningDropdown" name="utbildningDropdown" aria-label="Utbildning" />
+    </div>
+    <div class="dropdown-item">
+        <label for="ortDropdown">Ort</label>
+        <input type="text" id="ortDropdown" name="ortDropdown" aria-label="Ort" />
+    </div>
+    <div class="dropdown-item">
+        <label for="postnummerDropdown">Postnummer</label>
+        <input type="text" id="postnummerDropdown" name="postnummerDropdown" aria-label="Postnummer" />
+    </div>
+    <div class="dropdown-item">
+        <label for="yearDropdown">År</label>
+        <input type="text" id="yearDropdown" name="yearDropdown" aria-label="År" />
+    </div>
+    <div class="dropdown-item">
+        <label for="termDropdown">Termin</label>
+        <input type="text" id="termDropdown" name="termDropdown" aria-label="Termin" />
+    </div>
+    <div class="dropdown-item">
+        <label for="genderDropdown">Kön</label>
+        <input type="text" id="genderDropdown" name="genderDropdown" aria-label="Kön" />
+    </div>
+    <div class="dropdown-item">
+        <label for="competenceDropdown">Behörig</label>
+        <input type="text" id="competenceDropdown" name="competenceDropdown" aria-label="Behörig" />
+    </div>
+    <div class="dropdown-item">
+        <label for="colorSchemeDropdown">Färgtema</label>
+        <input type="text" id="colorSchemeDropdown" name="colorSchemeDropdown" aria-label="Färgtema" />
+    </div>
+</div>
+
+<div id="applicant-count" style="margin-top: 10px;">
+    Antal sökande: <span id="antal-sokande">0</span>
+</div>
+
+<div id="map" style="height: 725px; width: 100%;" tabindex="0"></div>
+
+<!-- Inkludera nödvändiga skript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+<script>
+    var jsonData = []; // För att lagra all JSON-data
+    var utbildningDropdown, ortDropdown, postnummerDropdown, colorSchemeDropdown, yearDropdown, termDropdown, genderDropdown, competenceDropdown;
+    var currentFilteredData = [];
+    var isDropdownUpdating = false; // Flagga för att förhindra oändliga loopar
+
+    // Initiera kartan
+    var map = L.map('map', {
+        center: [61.0, 10.0],
+        zoom: 5,
+        maxBounds: [[83.0, -10.0], [53.0, 40.0]],
+        maxBoundsViscosity: 1.0
+    });
+
+    // Lägg till tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 18,
+        minZoom: 5
+    }).addTo(map);
+
+    var heatmapLayer;
+
+    // Hjälpfunktion för att kontrollera giltig ort
+    function isValidOrt(ort) {
+        var validPattern = /^[a-zA-ZåäöÅÄÖ\s\-]+$/;
+        return validPattern.test(ort) && ort.trim() !== '';
+    }
+
+    // Uppdatera heatmapen med punkter
+    function updateHeatmap(points) {
+        if (heatmapLayer) {
+            map.removeLayer(heatmapLayer);
+        }
+
+        var selectedScheme = colorSchemeDropdown ? colorSchemeDropdown.value : 'standard';
+
+        var gradient;
+        switch (selectedScheme) {
+            case 'blue':
+                gradient = { 0.4: 'lightblue', 0.6: 'blue', 0.8: 'darkblue', 1: 'navy' };
+                break;
+            case 'greenRed':
+                gradient = { 0.4: 'green', 0.6: 'yellow', 0.8: 'orange', 1: 'red' };
+                break;
+            case 'monochrome':
+                gradient = { 0.4: '#ffffff', 0.6: '#aaaaaa', 0.8: '#555555', 1: '#000000' };
+                break;
+            default:
+                gradient = { 0.4: 'blue', 0.6: 'cyan', 0.7: 'lime', 0.8: 'yellow', 1: 'red' };
+        }
+
+        if (points.length > 0) {
+            heatmapLayer = L.heatLayer(points, {
+                radius: 20,
+                blur: 20,
+                maxZoom: 10,
+                gradient: gradient
+            }).addTo(map);
+        } else {
+            console.warn('Heatmap-punkter saknas, heatmapen uppdateras inte');
+        }
+    }
+
+    // Uppdatera antalet sökande
+    function updateApplicantCount(count) {
+        document.getElementById('antal-sokande').textContent = count;
+    }
+
+    // Fyll i dropdowns för Ort, Postnummer, Utbildning, Kön, Behörig, År och Termin
+    function populateDropdowns(dropdownOptions) {
+        const { coordinates, utbildningar, orter, postnummer, years, terms, genders, competences } = dropdownOptions;
+
+        // Filtrera orter för att endast inkludera de med giltiga tecken
+        var filteredOrter = orter.filter(function (ort) {
+            return isValidOrt(ort) || ort === 'Alla Orter';
+        });
+
+        // Fortsätt med att initiera dropdowns
+        var educationData = utbildningar.map(u => ({ text: u, value: u }));
+        var ortData = filteredOrter.map(o => ({ text: o, value: o }));
+        var postnummerData = postnummer.map(p => ({ text: p, value: p }));
+        var yearData = years.map(y => ({ text: y, value: y }));
+        var termData = terms.map(t => ({ text: t, value: t }));
+        var genderData = genders.map(g => ({ text: g, value: g }));
+        var competenceData = competences.map(c => ({ text: c, value: c }));
+
+        var initialIndex = 0;
+
+        // Initiera eller uppdatera Utbildning Dropdown
+        if (!utbildningDropdown) {
+            utbildningDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Utbildning',
+                dataSource: educationData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: true,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            utbildningDropdown.appendTo('#utbildningDropdown');
+        } else {
+            utbildningDropdown.dataSource = educationData;
+            utbildningDropdown.dataBind();
+        }
+
+        // Initiera eller uppdatera Ort Dropdown
+        if (!ortDropdown) {
+            ortDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Ort',
+                dataSource: ortData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: true,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            ortDropdown.appendTo('#ortDropdown');
+        } else {
+            ortDropdown.dataSource = ortData;
+            ortDropdown.dataBind();
+        }
+
+        // Initiera eller uppdatera Postnummer Dropdown
+        if (!postnummerDropdown) {
+            postnummerDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Postnummer',
+                dataSource: postnummerData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: true,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            postnummerDropdown.appendTo('#postnummerDropdown');
+        } else {
+            postnummerDropdown.dataSource = postnummerData;
+            postnummerDropdown.dataBind();
+        }
+
+        // Initiera eller uppdatera År Dropdown
+        if (!yearDropdown) {
+            yearDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj År',
+                dataSource: yearData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: false,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            yearDropdown.appendTo('#yearDropdown');
+        } else {
+            yearDropdown.dataSource = yearData;
+            yearDropdown.dataBind();
+        }
+
+        // Initiera eller uppdatera Termin Dropdown
+        if (!termDropdown) {
+            termDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Termin',
+                dataSource: termData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: false,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            termDropdown.appendTo('#termDropdown');
+        } else {
+            termDropdown.dataSource = termData;
+            termDropdown.dataBind();
+        }
+
+        // Initiera eller uppdatera Kön Dropdown
+        if (!genderDropdown) {
+            genderDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Kön',
+                dataSource: genderData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: false,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            genderDropdown.appendTo('#genderDropdown');
+        } else {
+            genderDropdown.dataSource = genderData;
+            genderDropdown.dataBind();
+        }
+
+        // Initiera eller uppdatera Behörig Dropdown
+        if (!competenceDropdown) {
+            competenceDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Behörig',
+                dataSource: competenceData,
+                fields: { text: 'text', value: 'value' },
+                allowFiltering: false,
+                popupHeight: '200px',
+                change: onFilterChange,
+                width: '100%',
+                index: initialIndex
+            });
+            competenceDropdown.appendTo('#competenceDropdown');
+        } else {
+            competenceDropdown.dataSource = competenceData;
+            competenceDropdown.dataBind();
+        }
+
+        // Färgtema Dropdown
+        if (!colorSchemeDropdown) {
+            colorSchemeDropdown = new ej.dropdowns.DropDownList({
+                placeholder: 'Välj Färgtema',
+                dataSource: [
+                    { text: 'Standard', value: 'standard' },
+                    { text: 'Blå Toner', value: 'blue' },
+                    { text: 'Grön till Röd', value: 'greenRed' },
+                    { text: 'Monokrom', value: 'monochrome' }
+                ],
+                fields: { text: 'text', value: 'value' },
+                value: 'standard',
+                change: updateHeatmapWithSelectedColorScheme,
+                width: '100%',
+                index: 0 // "Standard" är först
+            });
+            colorSchemeDropdown.appendTo('#colorSchemeDropdown');
+        }
+
+        console.log("Populated dropdowns successfully.");
+    }
+
+    // Händelsehanterare för filterändringar
+    function onFilterChange() {
+        if (isDropdownUpdating) {
+            return;
+        }
+
+        var filters = {
+            utbildning: utbildningDropdown.value !== 'Alla Utbildningar' ? utbildningDropdown.value : null,
+            ort: ortDropdown.value !== 'Alla Orter' ? ortDropdown.value : null,
+            postnummer: postnummerDropdown.value !== 'Alla Postnummer' ? postnummerDropdown.value : null,
+            year: yearDropdown.value !== 'Alla År' ? parseInt(yearDropdown.value) : null,
+            term: termDropdown.value !== 'Alla Termin' ? termDropdown.value : null,
+            kön: genderDropdown.value !== 'Alla Kön' ? genderDropdown.value : null,
+            behörig: competenceDropdown.value !== 'Alla Behörig' ? competenceDropdown.value : null
+        };
+
+        console.log("Filters applied:", filters);
+
+        // Hämta filtrerad data
+        fetchHeatmapData(filters.year, filters.term, filters.kön, filters.behörig, filters.ort, filters.postnummer, filters.utbildning);
+    }
+
+    // Uppdatera heatmap med vald färgtema
+    function updateHeatmapWithSelectedColorScheme() {
+        if (!currentFilteredData || currentFilteredData.length === 0) {
+            console.warn('Ingen filtrerad data tillgänglig.');
+            return;
+        }
+
+        var heatmapPoints = currentFilteredData.map(d => [parseFloat(d.latitude), parseFloat(d.longitude), parseFloat(d.antalSokande)]);
+        var validHeatmapPoints = heatmapPoints.filter(point =>
+            !isNaN(point[0]) && !isNaN(point[1]) && point[0] !== 0 && point[1] !== 0
+        );
+
+        updateHeatmap(validHeatmapPoints);
+    }
+
+    // Hämta heatmap-data från server med filter
+    function fetchHeatmapData(year, term, kön, behörig, ort, postnummer, utbildning) {
+        var url = '/GeoData/heatmap-data?';
+        var params = [];
+
+        if (utbildning) {
+            params.push('utbildning=' + encodeURIComponent(utbildning));
+        }
+
+        if (ort) {
+            params.push('ort=' + encodeURIComponent(ort));
+        }
+
+        if (postnummer) {
+            params.push('postnummer=' + encodeURIComponent(postnummer));
+        }
+
+        if (year) { // year är nullable
+            params.push('year=' + encodeURIComponent(year));
+        }
+
+        if (term) {
+            params.push('term=' + encodeURIComponent(term));
+        }
+
+        if (kön) {
+            params.push('kön=' + encodeURIComponent(kön));
+        }
+
+        if (behörig) {
+            params.push('behörig=' + encodeURIComponent(behörig));
+        }
+
+        url += params.join('&');
+
+        console.log("Fetching heatmap data from URL:", url);
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Server returned an error:', response.status, response.statusText, 'Response Text:', text);
+                        throw new Error(text || 'Nätverksfel');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Filtrerad data från servern:', data);
+
+                if (data && data.coordinates) {
+                    jsonData = data.coordinates;
+
+                    jsonData.forEach(item => {
+                        if (!isValidOrt(item.ort)) {
+                            item.ort = 'Okänd Ort';
+                        }
+                    });
+
+                    var heatmapPoints = jsonData.map(d => [parseFloat(d.latitude), parseFloat(d.longitude), parseFloat(d.antalSokande)]);
+                    var validHeatmapPoints = heatmapPoints.filter(point =>
+                        !isNaN(point[0]) && !isNaN(point[1]) && point[0] !== 0 && point[1] !== 0
+                    );
+
+                    updateHeatmap(validHeatmapPoints);
+                    updateApplicantCount(jsonData.reduce((acc, curr) => acc + curr.antalSokande, 0));
+
+                    currentFilteredData = jsonData;
+
+                    // Uppdatera dropdowns utan att trigga onFilterChange igen
+                    isDropdownUpdating = true;
+                    populateDropdowns(data);
+                    isDropdownUpdating = false;
+                } else {
+                    console.warn('Ingen giltig data mottagen för heatmapen.');
+                    updateApplicantCount(0);
+
+                    // Rensa dropdowns men behåll 'Alla' alternativen
+                    isDropdownUpdating = true;
+                    populateDropdowns({
+                        coordinates: [],
+                        utbildningar: ["Alla Utbildningar"],
+                        orter: ["Alla Orter"],
+                        postnummer: ["Alla Postnummer"],
+                        years: ["Alla År"],
+                        terms: ["Alla Termin"],
+                        genders: ["Alla Kön"],
+                        competences: ["Alla Behörig"]
+                    });
+                    isDropdownUpdating = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading data from controller:', error.message);
+                alert('Ett fel uppstod vid hämtning av data: ' + error.message);
+
+                // Rensa dropdowns men behåll 'Alla' alternativen
+                isDropdownUpdating = true;
+                populateDropdowns({
+                    coordinates: [],
+                    utbildningar: ["Alla Utbildningar"],
+                    orter: ["Alla Orter"],
+                    postnummer: ["Alla Postnummer"],
+                    years: ["Alla År"],
+                    terms: ["Alla Termin"],
+                    genders: ["Alla Kön"],
+                    competences: ["Alla Behörig"]
+                });
+                isDropdownUpdating = false;
+            });
+    }
+
+    // Initiera alla dropdowns och hämta initial data
+    fetchHeatmapData(null, null, null, null, null, null, null);
+</script>
+
+<style>
+    /* Layout för dropdowns */
+    .dropdown-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-rows: repeat(auto-fill, minmax(150px, auto));
+        gap: 10px;
+        margin-bottom: 20px;
+        background-color: var(--background-color);
+    }
+
+    .dropdown-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .dropdown-item label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            white-space: normal; /* Tillåter etiketter att brytas till flera rader */
+            color: var(--text-color);
+        }
+
+        /* Säkerställ att dropdowns tar upp hela bredden */
+        .dropdown-item input {
+            width: 100%;
+            background-color: var(--base-color);
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+        }
+
+    /* Stilar för fokus */
+    input:focus, button:focus, .dropdown-container .dropdown-item input:focus {
+        outline: 2px solid var(--link-text-color);
+        outline-offset: 2px;
+    }
+
+    .btn-primary {
+        background-color: var(--base-color);
+        color: var(--text-color);
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--background-color);
+        }
+
+    .dropdown-container:hover,
+    .dropdown-container:focus,
+    .dropdown-container .dropdown-item:hover,
+    .dropdown-container .dropdown-item:focus {
+        background-color: transparent;
+        border: none;
+    }
+
+    /* Säkerställ att Leaflet-kartan visas korrekt */
+    #map {
+        height: 725px;
+        width: 100%;
+    }
+</style>

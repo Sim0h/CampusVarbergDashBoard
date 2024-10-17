@@ -1,51 +1,86 @@
-﻿@model IEnumerable<Applicant>
-         
+@model CampusVarbergDashBoard.ViewModels.DashboardViewModel
+
+
+
 @{
     spacingModel modelValue = new spacingModel();
     modelValue.cellSpacing = new double[] { 10, 10 };
+   
+}
+@{
+    var viewData = new ViewDataDictionary(ViewData)
+    {
+        { "MapId", "heatmap-overview" },
+        { "MapHeight", "400px" }
+    };
 }
 
 
-<div class="container">
-    <div class="dashboard">
-        <h1>Summering av Sökande till YH-Utbildningar:</h1>
-        <div>
-            <div class=" control-section">
-                <!--  DashboardLayout element declaration -->
-                <ejs-dashboardlayout id="defaultLayout" columns="6" cellSpacing="modelValue.cellSpacing">
-                    <e-dashboardlayout-panels>
-                        <!--Panel 1-->
-                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="0" col="0" content="<div>1</div>">
-                        </e-dashboardlayout-panel>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
-                        <!--Panel 2-->
-                        <e-dashboardlayout-panel sizeX="3" sizeY="2" row="0" col="1" content="<div>2</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 3-->
-                        <e-dashboardlayout-panel sizeX="1" sizeY="3" row="0" col="4" content="<div>3</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 4-->
-                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="1" col="0" content="<div>4</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 5-->
-                        <e-dashboardlayout-panel sizeX="2" sizeY="1" row="2" col="0" content="<div>5</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 6-->
-                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="2" col="2" content="<div>6</div>">
-                        </e-dashboardlayout-panel>
-
-                        <!--Panel 7-->
-                        <e-dashboardlayout-panel sizeX="1" sizeY="1" row="2" col="3" content="<div>7</div>">
-                        </e-dashboardlayout-panel>
-
-                    </e-dashboardlayout-panels>
-                </ejs-dashboardlayout>
-                <!-- end of dashboardlayout element -->
+@* <div class="container">
+ *@    <div class="overview-container">
+        <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
+        <div class="row">
+                @*card 1*@
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title">
+                                <h5>Antal sökande</h5><br />
+                            </div>
+                            @await Html.PartialAsync("_TotalApplicantsOverall", Model.TotalApplicants)
+                        </div>
+                    </div>
+                </div>
+            @*card 2*@
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="title">
+                            <h5>Könsfördelning</h5>
+                        </div>
+                        @await Html.PartialAsync("_GenderDistributionOverall", Model.GenderDistribution)
+                    </div>
+                </div>
+            </div>
+                @*card 3*@
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title">
+                                <h5>Kompetensfördelning</h5>
+                            </div>
+                            @await Html.PartialAsync("_CompetenceOverall", Model.CompetenceDistribution)
+                        </div>
+                    </div>
+                </div>
+        @*card 4*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Sökta utbildningar</h5>
+                    </div>
+                    @await Html.PartialAsync("_EducationDistributionOverall", Model.EducationDistribution)
+                </div>
             </div>
         </div>
-    </div>
-</div>
+            @*card 5*@
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="title">
+                            <h5>Karta översikt</h5>
+                        </div>
+                    @await Html.PartialAsync("_HeatmapPartial", viewData)
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+@*     </div>
+ *@

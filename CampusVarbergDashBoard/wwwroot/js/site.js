@@ -1,4 +1,21 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
 
-// Write your JavaScript code.
+const header = document.querySelector('header');
+const headerHeight = header.offsetHeight;
+const hiddenNavbar = document.getElementById('hiddenNavbar')
+
+
+function onScroll() {
+    const pageWidth = window.innerWidth
+    if (pageWidth > 576) {
+        if (window.pageYOffset > headerHeight) {
+            hiddenNavbar.style.display = 'block';
+        }
+        else {
+            hiddenNavbar.style.display = 'none';
+        }
+    }
+}
+
+window.addEventListener('scroll', onScroll);
+
