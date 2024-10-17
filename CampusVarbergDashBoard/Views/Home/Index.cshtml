@@ -20,39 +20,42 @@
 
 @* <div class="container">
  *@    <div class="overview-container">
-        <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
-        <div class="row">
-                @*card 1*@
-                <div class="col-lg-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="title">
-                                <h5>Antal sökande</h5><br />
-                            </div>
-                        </div>
+    <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
+    <div class="row">
+        @*card 1*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Antal sökande</h5><br />
                     </div>
-                </div>
-            @*card 2*@
-            <div class="col-lg-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="title">
-                            <h5>Könsfördelning</h5>
-                        </div>
-                    </div>
+                    @await Html.PartialAsync("_TotalApplicantsOverall", Model)
                 </div>
             </div>
-                @*card 3*@
-                <div class="col-lg-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="title">
-                                <h5>Kompetensfördelning</h5>
-                            </div>
+        </div>
+        @*card 2*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Könsfördelning</h5>
 
-                        </div>
                     </div>
+                    @Html.PartialAsync("_GenderDistributionOverall", Model)
                 </div>
+            </div>
+        </div>
+        @*card 3*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Kompetensfördelning</h5>
+                    </div>
+                    @Html.PartialAsync("_CompetenceDistributionOverall", Model)
+                </div>
+            </div>
+        </div>
         @*card 4*@
         <div class="col-lg-4 mb-4">
             <div class="card">
@@ -60,22 +63,23 @@
                     <div class="title">
                         <h5>Sökta utbildningar</h5>
                     </div>
+                    @Html.PartialAsync("_EducationDistributionOverall", Model)
                 </div>
             </div>
         </div>
-            @*card 5*@
-            <div class="col-lg-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="title">
-                            <h5>Karta översikt</h5>
-                        </div>
-
+        @*card 5*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Karta översikt</h5>
                     </div>
+
                 </div>
             </div>
-
-            </div>
         </div>
+
+    </div>
+</div>
 @*     </div>
  *@
