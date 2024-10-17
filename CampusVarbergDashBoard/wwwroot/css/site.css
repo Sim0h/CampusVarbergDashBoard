@@ -305,6 +305,15 @@ body {
         text-align: left;
     }
 
+    .navbar-nav .nav-link{
+        padding-left: 20px;
+    }
+
+    .nav-button {
+        padding: 10px;
+        width: 150px;
+    }
+
     .settings-container {
         background-color: var(--base-color);
     }
@@ -315,10 +324,13 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width:576px){
     .nav-item a {
         width: 20%;
     }
+}
+
+@media (max-width: 768px) {
 
     .overview-container{
         margin-left: 0;
