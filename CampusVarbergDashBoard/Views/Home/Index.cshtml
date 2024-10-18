@@ -1,8 +1,9 @@
-@model CampusVarbergDashBoard.ViewModels.DashboardViewModel
+@model CampusVarbergDashBoard.ViewModels.FilterViewModel
 
 @{
     spacingModel modelValue = new spacingModel();
     modelValue.cellSpacing = new double[] { 10, 10 };
+   
 }
 @{
     var viewData = new ViewDataDictionary(ViewData)
@@ -12,6 +13,7 @@
     };
 }
 
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
@@ -20,18 +22,18 @@
     <div class="overview-container">
         <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
         <div class="row">
-            <!-- Total Applicants Card -->
-            <div class="col-lg-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="title">
-                            <h5>Antal sökande</h5><br />
+                @*card 1*@
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title">
+                                <h5>Antal sökande</h5><br />
+                            </div>
+                            @await Html.PartialAsync("_TotalApplicantsOverall", Model.TotalApplicants)
                         </div>
-                        @await Html.PartialAsync("_TotalApplicantsOverall", Model.TotalApplicants)
                     </div>
                 </div>
-            </div>
-            <!-- Gender Distribution Card -->
+            @*card 2*@
             <div class="col-lg-4 mb-4">
                 <div class="card">
                     <div class="card-body">
@@ -42,39 +44,40 @@
                     </div>
                 </div>
             </div>
-            <!-- Competence Distribution Card -->
-            <div class="col-lg-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="title">
-                            <h5>Kompetensfördelning</h5>
+                @*card 3*@
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="title">
+                                <h5>Kompetensfördelning</h5>
+                            </div>
+
                         </div>
-                        @await Html.PartialAsync("_CompetenceOverall", Model.CompetenceDistribution)
+                    </div>
+                </div>
+        @*card 4*@
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Sökta utbildningar</h5>
                     </div>
                 </div>
             </div>
-            <!-- Education Distribution Card -->
-            <div class="col-lg-8 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="title">
-                            <h5>Sökta utbildningar</h5>
-                        </div>
-                        @await Html.PartialAsync("_EducationDistributionOverall", Model.EducationDistribution)
-                    </div>
-                </div>
-            </div>
-            <!-- Map Overview Card -->
+        </div>
+            @*card 5*@
             <div class="col-lg-4 mb-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="title">
                             <h5>Karta översikt</h5>
                         </div>
-                        @await Html.PartialAsync("_HeatmapPartial", null, viewData)
+
                     </div>
                 </div>
             </div>
+
+            </div>
         </div>
-    </div>
-</div>
+@*     </div>
+ *@

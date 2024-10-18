@@ -137,7 +137,7 @@ namespace CampusVarbergDashBoard.Controllers
             };
         }
 
-		private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants) //filter för erbjuden plats, klumpar tackat ja + inskriven
+		private IEnumerable<Applicant> OfferedSpotFilter(IEnumerable<Applicant> applicants)
 		{
 
             return applicants.Select(a =>
@@ -340,15 +340,17 @@ namespace CampusVarbergDashBoard.Controllers
 				{ "Medicinsk vårdadministratör", new List<string> { "Medicinsk Sekreterare", "Medicinsk Sekreterare / koordinator" } },
 				{ "Digital analytiker", new List<string>() },
 				{ "Elkonstruktör", new List<string>(){"Elingenjör/Elkonstruktör" } },
+				{ "Vatten- och biogastekniker", new List<string>(){ "Drifttekniker - biogas och vattenrening", "Drifttekniker biogas och vattenrening, Varberg" } },
+				{ "VVS-ingenjör - energi och teknik", new List<string>(){ "VVS-ingenjör, Varberg" } },
+
+			};
+		}
 
 
-            };
+
+        private SqlConnection GetConnection()
+        {
+            return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         }
-
-
-    }
-
-
-
 
 }
