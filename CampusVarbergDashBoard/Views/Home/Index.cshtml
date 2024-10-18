@@ -1,5 +1,6 @@
 @model CampusVarbergDashBoard.ViewModels.DashboardViewModel
 
+
 @{
     spacingModel modelValue = new spacingModel();
     modelValue.cellSpacing = new double[] { 10, 10 };
@@ -18,9 +19,11 @@
 <script src="https://cdn.syncfusion.com/ej2/20.2.36/dist/ej2.min.js"></script>
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
-<div class="container">
-    <div class="overview-container">
-        <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
+
+@* <div class="container">
+*@<div class="overview-container">
+     <h4 class="overview-title"><strong>Summering av Sökande till YH-Utbildningar:</strong></h4>
+
         <div class="row">
                 @*card 1*@
                 <div class="col-lg-4 mb-4">
@@ -29,7 +32,7 @@
                             <div class="title">
                                 <h5>Antal sökande</h5><br />
                             </div>
-                            @await Html.PartialAsync("_TotalApplicantsOverall", Model.TotalApplicants)
+                            @await Html.PartialAsync("_TotalApplicantsOverall", Model.TotalApplicants)<br /><br /><br />
                         </div>
                     </div>
                 </div>
@@ -77,7 +80,24 @@
                 </div>
             </div>
 
+        @*Big card*@
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="title">
+                        <h5>Åldersfördelning</h5>
+                    </div>
+                    @if (Model != null)
+                    {
+                        @await Html.PartialAsync("_AgeDistributionOverall", Model.AgeDistribution)
+                    }
+                    else
+                    {
+                        <p>No data available</p>
+                    }
+                </div>
             </div>
         </div>
-@*     </div>
- *@
+     </div>
+</div>
+@* </div>
