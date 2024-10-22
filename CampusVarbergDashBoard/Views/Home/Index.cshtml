@@ -54,17 +54,18 @@
                             <div class="title">
                                 <h5>Kompetensfördelning</h5>
                             </div>
-
+                            @await Html.PartialAsync("_CompetenceOverall", Model.CompetenceDistribution)
                         </div>
                     </div>
                 </div>
         @*card 4*@
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-8 mb-4">
             <div class="card">
                 <div class="card-body">
                     <div class="title">
                         <h5>Sökta utbildningar</h5>
                     </div>
+                    @await Html.PartialAsync("_EducationDistributionOverall", Model.EducationDistribution)
                 </div>
             </div>
         </div>
@@ -75,7 +76,7 @@
                         <div class="title">
                             <h5>Karta översikt</h5>
                         </div>
-
+                        @await Html.PartialAsync("_HeatmapPartial", viewData)
                     </div>
                 </div>
             </div>
@@ -100,4 +101,4 @@
         </div>
      </div>
 </div>
-@* </div>
+
