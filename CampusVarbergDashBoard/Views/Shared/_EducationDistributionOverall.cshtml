@@ -3,11 +3,59 @@
 
 
 <ejs-accumulationchart id="EducationDistrubtion" width="60%" height="60%">
-    <e-accumulationchart-legendsettings visible="false" position="Right" alignment="Near" toggleVisibility="false" width="150px">
+    <e-accumulationchart-legendsettings visible="true" position="Right" alignment="Center" toggleVisibility="true" width="300px" columnCount="2">
+        <e-legendsettings-textstyle color="var(--text-color)"></e-legendsettings-textstyle>
     </e-accumulationchart-legendsettings>
     <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
     <e-accumulation-series-collection>
-        <e-accumulation-series dataSource="@(Model)" xName="Name" yName="NumberOfApplicants" name="Sökta Utbildningar" innerRadius="40%">
+        <e-accumulation-series dataSource="@(Model.Select(item => new { Name = "(" + item.NumberOfApplicants + ") " + item.Name, NumberOfApplicants = item.NumberOfApplicants }))"
+                               xName="Name" yName="NumberOfApplicants" name="Sökta Utbildningar" innerRadius="40%">
         </e-accumulation-series>
     </e-accumulation-series-collection>
 </ejs-accumulationchart>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var chart = document.getElementById('EducationDistrubtion').ej2_instances[0];
+
+        function updateChartDisplay() {
+            var isSmallScreen = window.innerWidth < 992;
+            if (isSmallScreen) {
+                chart.series[0].visible = false; // Hides the chart data
+                chart.legendSettings.position = 'Bottom'; // Moves legend to bottom and centers it
+                chart.legendSettings.columnCount = 1; // Show legends in one column on smaller screens
+                chart.legendSettings.height = '200px'; // Limit the height of the legend container
+                chart.legendSettings.alignment = 'Center'; // Centers the legend on small screens
+            } else {
+                chart.series[0].visible = true;
+                chart.legendSettings.position = 'Right'; // Default position for larger screens
+                chart.legendSettings.columnCount = 2; // Show legends in two columns on larger screens
+                chart.legendSettings.height = 'auto'; // Remove height limit for larger screens
+                chart.legendSettings.alignment = 'Center'; // Ensures centering on larger screens too
+            }
+            chart.refresh();
+        }
+
+        // Initial call to set the chart display
+        updateChartDisplay();
+
+        // Add resize event listener with debounce to handle screen resize
+        window.addEventListener('resize', debounce(updateChartDisplay, 300));
+
+        function debounce(func, delay) {
+            var timer;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    func.apply(context, args);
+                }, delay);
+            };
+        }
+    });
+
+
+</script>
