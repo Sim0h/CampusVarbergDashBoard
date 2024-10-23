@@ -109,7 +109,7 @@ namespace CampusVarbergDashBoard.Repository
                                 COUNT(CASE WHEN Inlämnad IS NOT NULL THEN 1 ELSE NULL END) AS InlämnadCount,
                                 COUNT(CASE WHEN Behörig = 'Ja' THEN 1 ELSE NULL END) AS BehörigCount,
                                 COUNT(CASE WHEN Status = 'Erbjuden plats (Inskriven)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount,
-                                COUNT(CASE WHEN Status = 'Erbjuden plats (Tackat ja)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount
+                                COUNT(CASE WHEN Status = 'Erbjuden plats (Tackat ja)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount   
                             FROM dbo.ExcelData";
                            
 

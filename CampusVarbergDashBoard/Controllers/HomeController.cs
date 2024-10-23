@@ -1,3 +1,4 @@
+using CampusVarbergDashBoard.FilterData;
 using CampusVarbergDashBoard.Models;
 using CampusVarbergDashBoard.Repository;
 using CampusVarbergDashBoard.Services;
@@ -25,6 +26,17 @@ namespace CampusVarbergDashBoard.Controllers
             var competenceDistribution = await _applicantRepo.GetCompetenceDistributionAsync();
             var ageDistribution = await _applicantRepo.GetAgeDistributionAsync();
             var genderDistribution = await _applicantRepo.GetGenderDistributionAsync();
+            var statusDistribution = await _applicantRepo.GetStatusDistributionAsync();
+
+            List<StatusChartData> chartData = new List<StatusChartData>
+            {
+                new StatusChartData { Status = "Inlämnad Ansökan", Count = statusDistribution.Sum(s => s.InlämnadCount) },
+                new StatusChartData { Status = "Behöriga", Count = statusDistribution.Sum(s => s.BehörigCount) },
+                new StatusChartData { Status = "Erbjudna plats", Count = statusDistribution.Sum(s => s.ErbjudenPlatsTackatJaCount) }
+
+            };
+
+            ViewBag.dataSource = chartData;
 
             var viewModel = new DashboardViewModel
             {
@@ -32,7 +44,8 @@ namespace CampusVarbergDashBoard.Controllers
                 EducationDistribution = educationDistribution,
                 CompetenceDistribution = competenceDistribution,
                 AgeDistribution = ageDistribution,
-                GenderDistribution = genderDistribution
+                GenderDistribution = genderDistribution,
+                StatusDistribution = statusDistribution
             };
 
             return View(viewModel);
@@ -59,4 +72,9 @@ namespace CampusVarbergDashBoard.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 	}
+    public class StatusChartData
+    {
+        public string Status { get; set; }
+        public int Count { get; set; }
+    }
 }
