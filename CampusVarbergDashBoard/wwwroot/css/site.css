@@ -360,6 +360,8 @@ form {
     text-align: center;
     height: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 .card-body {
@@ -371,6 +373,7 @@ form {
     text-align: center;
     padding: 15px;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 .title h5 {
@@ -488,9 +491,19 @@ p {
     }
 }
 
-@media (max-width: 768px) and (min-width:576px){
-    .nav-item a {
+@media (max-width: 992px) and (min-width:645px){
+
+    .nav-button {
         width: 20%;
+    }
+}
+@media (max-width: 645px) and (min-width:576px) {
+
+    .nav-button {
+        width: 15%;
+    }
+    .nav-item{
+        padding: 0 !important;
     }
 }
 
@@ -506,6 +519,10 @@ p {
     .dropdown-container-filtervy{
         display: block;
     }
+
+    .chart-container {
+        width: 100%; /* Make the chart full width on smaller screens */
+    }
 }
 
 @media (max-width: 992px){
@@ -516,6 +533,40 @@ p {
         min-width: 250px;
         max-width: 450px;
     }
+    .nav-item a {
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .e-accumulationchart-legend {
+        max-height: 200px; /* Begränsa höjden på legenden */
+        overflow-y: auto; /* Gör legenden scrollbar om den blir för stor */
+        text-align: center;
+    }
+
+    .e-legend-container {
+        max-height: 200px; /* Begränsa höjden på själva container */
+        overflow-y: auto; /* Scrollbar om legenderna blir för många */
+    }
+    .e-legend-text {
+        text-align: center !important; /* Centrerar själva legend-texten */
+        display: block; /* Ser till att texten tar upp hela raden */
+        margin: 0 auto; /* Centrerar texten horisontellt */
+    }
+
+    /* Fixar problem med textinriktning */
+    .e-legend-item {
+        display: flex; /* Flexbox för att centrera */
+        justify-content: center; /* Centrera horisontellt */
+        align-items: center; /* Centrera vertikalt */
+    }
+}
+
+.col-lg-12 {
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 

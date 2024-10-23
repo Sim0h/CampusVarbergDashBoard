@@ -99,25 +99,24 @@ namespace CampusVarbergDashBoard.Repository
             }
         }
 
-        
+
         public async Task<IEnumerable<StatusDistribution>> GetStatusDistributionAsync()
         {
             using (var connection = GetConnection())
             {
                 string query = @"
-                            SELECT
-                                COUNT(CASE WHEN Inlämnad IS NOT NULL THEN 1 ELSE NULL END) AS InlämnadCount,
-                                COUNT(CASE WHEN Behörig = 'Ja' THEN 1 ELSE NULL END) AS BehörigCount,
-                                COUNT(CASE WHEN Status = 'Erbjuden plats (Inskriven)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount,
-                                COUNT(CASE WHEN Status = 'Erbjuden plats (Tackat ja)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount
-                            FROM dbo.ExcelData";
-                           
+                    SELECT
+                        COUNT(CASE WHEN Inlämnad IS NOT NULL THEN 1 ELSE NULL END) AS InlämnadCount,
+                        COUNT(CASE WHEN Behörig = 'Ja' THEN 1 ELSE NULL END) AS BehörigCount,
+                        COUNT(CASE WHEN Status = 'Erbjuden plats (Tackat ja)' OR Status = 'Erbjuden plats (Inskriven)' THEN 1 ELSE NULL END) AS ErbjudenPlatsTackatJaCount
+                    FROM dbo.ExcelData";
 
                 var result = await connection.QueryAsync<StatusDistribution>(query);
                 Console.WriteLine($"Retrieved {result.Count()} Status distributions");
                 return result;
             }
         }
+
 
         public async Task<IEnumerable<Applicant>> GetApplicantsLocAsync(string ort, string postnummer, int? year, string term, string kön, string behörig, string utbildning)
         {

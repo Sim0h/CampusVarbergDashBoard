@@ -9,5 +9,6 @@ namespace CampusVarbergDashBoard.ViewModels
         public CompetenceDistribution CompetenceDistribution { get; set; }
         public IEnumerable<AgeDistribution> AgeDistribution { get; set; }
         public GenderDistribution GenderDistribution { get; set; }
+        public IEnumerable<StatusDistribution> StatusDistribution { get; set; }
     }
 }
