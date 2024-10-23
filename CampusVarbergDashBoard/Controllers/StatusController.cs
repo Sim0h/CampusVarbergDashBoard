@@ -33,9 +33,9 @@ namespace CampusVarbergDashBoard.Controllers
 
     }
 
-    public class StatusChartData
-    {
-        public string Status { get; set; }
-        public int Count { get; set; }
-    }
+    //public class StatusChartData
+    //{
+    //    public string Status { get; set; }
+    //    public int Count { get; set; }
+    //}
 }
